@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.mechanism;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -10,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class MecanumDrive {
     private DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
-    private IMU imu;
+    public GoBildaPinpointDriver imu;
 
     public void init(HardwareMap hwMap){
         frontLeftMotor = hwMap.get(DcMotor.class, "front_left_motor");
@@ -25,13 +26,18 @@ public class MecanumDrive {
         frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        imu = hwMap.get(IMU.class, "imu");
+        imu = hwMap.get(GoBildaPinpointDriver.class, "pinpoint");
+        imu.setHeading(0,AngleUnit.DEGREES);
+        imu.recalibrateIMU();
 
-        RevHubOrientationOnRobot revOrientation = new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
 
-        imu.initialize(new IMU.Parameters(revOrientation));
+
+//        RevHubOrientationOnRobot revOrientation = new RevHubOrientationOnRobot(
+//                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+//                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
+//
+//
+//        imu.initialize(new IMU.Parameters(revOrientation));
     }
 
     public void drive(double power, double theta, double turn) {
@@ -60,8 +66,8 @@ public class MecanumDrive {
     public void driveFieldRelative(double y, double x, double turn){
         double theta = Math.atan2(y, x);
         double r = Math.hypot(x, y);
-
-        theta = AngleUnit.normalizeRadians(theta - imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+        imu.update();
+        theta = AngleUnit.normalizeRadians(theta - imu.getHeading(AngleUnit.RADIANS));
 
 //        double newForward = r * Math.sin(theta);
 //        double newStrafe = r * Math.cos(theta);
