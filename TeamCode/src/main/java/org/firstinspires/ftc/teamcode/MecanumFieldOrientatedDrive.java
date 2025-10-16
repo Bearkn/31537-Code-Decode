@@ -7,12 +7,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mechanism.GoalAprilTagTracker;
 import org.firstinspires.ftc.teamcode.mechanism.MecanumDrive;
+import org.firstinspires.ftc.teamcode.mechanism.Shooter;
 
 import java.math.MathContext;
 
 @TeleOp
 public class MecanumFieldOrientatedDrive extends OpMode {
     MecanumDrive drive = new MecanumDrive();
+    Shooter shoot = new Shooter();
     GoalAprilTagTracker tracker = new GoalAprilTagTracker();
 
     boolean autoaim = false;
@@ -27,6 +29,11 @@ public class MecanumFieldOrientatedDrive extends OpMode {
 
     @Override
     public void loop(){
+
+        if(gamepad1.bWasPressed()){
+            shoot.spin(70);
+        }
+
         if(gamepad1.aWasPressed()){
             autoaim = !autoaim;
         }
