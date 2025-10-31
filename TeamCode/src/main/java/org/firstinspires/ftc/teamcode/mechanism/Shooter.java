@@ -6,6 +6,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Shooter {
     private DcMotor flyWheelMotor1,flyWheelMotor2, turretMotor;
 
+    public boolean spinShooter = false;
+    public double speed = 0.2;
+
     public void init(HardwareMap hwMap) {
         flyWheelMotor1 = hwMap.get(DcMotor.class, "fly1");
         flyWheelMotor2 = hwMap.get(DcMotor.class, "fly2");
@@ -16,10 +19,15 @@ public class Shooter {
 
     }
 
-    public void spin(double speed){
-
-        flyWheelMotor1.setPower(speed);
-        flyWheelMotor1.setPower(speed);
+    public void spin(){
+        if(spinShooter = true){
+            flyWheelMotor1.setPower(speed);
+            flyWheelMotor2.setPower(-speed);
+        } else {
+            flyWheelMotor1.setPower(0);
+            flyWheelMotor2.setPower(0);
+        }
+//
     }
 
 }

@@ -15,37 +15,45 @@ public class Main extends OpMode {
     MecanumDrive drive = new MecanumDrive();
     Shooter shoot = new Shooter();
     Intake intake = new Intake();
-    GoalAprilTagTracker tracker = new GoalAprilTagTracker();
+//    GoalAprilTagTracker tracker = new GoalAprilTagTracker();
 
-    boolean autoaim = false;
+//    boolean autoaim = false;
+
+    double tolerance = .05;
 
     double forward, strafe, rotate;
 
     @Override
     public void init(){
         drive.init(hardwareMap);
-        tracker.init(hardwareMap);
+//        tracker.init(hardwareMap);
         intake.init(hardwareMap);
+        shoot.init(hardwareMap);
     }
 
     @Override
     public void loop(){
 
         if(gamepad1.bWasPressed()){
-            shoot.spin(.05);
-        } else {
-            shoot.spin(0);
+            
         }
 
         if(gamepad1.aWasPressed()){
-            intake.spin(.2);
-        } else {
-            intake.spin(0);
+            intake.spin(.2f);
         }
         double y = -gamepad1.left_stick_y;
         double x  = gamepad1.left_stick_x;
         double turn  = gamepad1.right_stick_x;
-        tracker.update();
+        if (y >= -tolerance && y <= tolerance) {
+            y = 0;
+        }
+        if (x >= -tolerance && x <= tolerance) {
+            x = 0;
+        }
+        if (turn >= -tolerance && turn <= tolerance) {
+            turn = 0;
+        }
+//        tracker.update();
         telemetry.addData("Heading", drive.imu.getHeading(AngleUnit.DEGREES));
         telemetry.addData("x_drive", x);
         telemetry.addData("y_drive", y);

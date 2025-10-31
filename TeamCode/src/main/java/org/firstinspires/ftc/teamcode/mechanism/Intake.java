@@ -5,8 +5,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Intake {
-    private DcMotor intakeMotor;
+    public DcMotor intakeMotor;
     public Servo hardStop;
+
+    public boolean spinIntake = false;
+    public double speed = 0.5;
 
     public void init(HardwareMap hwMap) {
         intakeMotor = hwMap.get(DcMotor.class, "intake");
@@ -19,8 +22,12 @@ public class Intake {
     public void setServoPos(double angle){
         hardStop.setPosition(angle);
     }
-    public void spin(double speed){
-        intakeMotor.setPower(speed);
-    }
 
+    public void spin() {
+        if (spinIntake = true) {
+            intakeMotor.setPower(-speed);
+        } else {
+            intakeMotor.setPower(0);
+        }
+    }
 }
