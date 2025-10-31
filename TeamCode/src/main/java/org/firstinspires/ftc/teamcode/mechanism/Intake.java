@@ -9,7 +9,7 @@ public class Intake {
     public Servo hardStop;
 
     public boolean spinIntake = false;
-    public double speed = 0.5;
+    public double speed = 1;
 
     public void init(HardwareMap hwMap) {
         intakeMotor = hwMap.get(DcMotor.class, "intake");
@@ -24,7 +24,7 @@ public class Intake {
     }
 
     public void spin() {
-        if (spinIntake = true) {
+        if (spinIntake == true) {
             intakeMotor.setPower(-speed);
         } else {
             intakeMotor.setPower(0);

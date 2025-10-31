@@ -35,12 +35,28 @@ public class Main extends OpMode {
     public void loop(){
 
         if(gamepad1.bWasPressed()){
-            
+            intake.spinIntake = !intake.spinIntake;
+//            shoot.speed -= .01;
+        }
+
+        if(gamepad1.xWasPressed()){
+            shoot.spinShooter = !shoot.spinShooter;
+//            shoot.speed += .01;
         }
 
         if(gamepad1.aWasPressed()){
-            intake.spin(.2f);
+//            shoot.speed += .05;
+            intake.setServoPos(.35);
         }
+
+        if(gamepad1.yWasPressed()){
+//            shoot.speed -= .05;
+            intake.setServoPos(.6);
+
+        }
+
+        intake.spin();
+        shoot.spin();
         double y = -gamepad1.left_stick_y;
         double x  = gamepad1.left_stick_x;
         double turn  = gamepad1.right_stick_x;
@@ -59,6 +75,14 @@ public class Main extends OpMode {
         telemetry.addData("y_drive", y);
         telemetry.addData("t_drive", turn);
         telemetry.addData("servo Angle",intake.hardStop.getPosition());
+        telemetry.addData("intakeOn",intake.spinIntake);
+        telemetry.addData("shooterOn",shoot.spinShooter);
+        telemetry.addData("shooterSpeed",shoot.speed);
+        telemetry.addData("turret rotation",shoot.turretMotor.getPosition());
+        telemetry.addData("shooter rpm",shoot.flyWheelMotor1.getVelocity());
+
+
+
 
 //        if(!tracker.detections.isEmpty() & autoaim) {
 //            telemetry.addData("x", tracker.tag.ftcPose.x);
@@ -85,7 +109,7 @@ public class Main extends OpMode {
 //        }
 
 
-        drive.driveRobotRelative(y,x,turn);
-//         drive.driveFieldRelative(y,x,turn);
+//        drive.driveRobotRelative(y,x,turn);
+         drive.driveFieldRelative(y,x,turn);
     }
 }
