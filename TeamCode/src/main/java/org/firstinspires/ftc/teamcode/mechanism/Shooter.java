@@ -4,19 +4,22 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Shooter {
-    private DcMotor flyWheelMotor;
-    private DCMotor turretMotor;
+    private DcMotor flyWheelMotor1,flyWheelMotor2, turretMotor;
 
     public void init(HardwareMap hwMap) {
-        flyWheelMotor = hwMap.get(DcMotor.class, "flywheel");
+        flyWheelMotor1 = hwMap.get(DcMotor.class, "fly1");
+        flyWheelMotor2 = hwMap.get(DcMotor.class, "fly2");
         turretMotor = hwMap.get(DcMotor.class, "turret");
-        flyWheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flyWheelMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flyWheelMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
     public void spin(double speed){
-        flyWheelMotor.setPower(speed);
+
+        flyWheelMotor1.setPower(speed);
+        flyWheelMotor1.setPower(speed);
     }
 
 }

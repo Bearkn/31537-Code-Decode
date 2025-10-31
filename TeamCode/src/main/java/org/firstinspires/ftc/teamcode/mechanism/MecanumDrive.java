@@ -14,10 +14,10 @@ public class MecanumDrive {
     public GoBildaPinpointDriver imu;
 
     public void init(HardwareMap hwMap){
-        frontLeftMotor = hwMap.get(DcMotor.class, "front_left_motor");
-        frontRightMotor = hwMap.get(DcMotor.class, "front_right_motor");
-        backLeftMotor = hwMap.get(DcMotor.class, "back_left_motor");
-        backRightMotor = hwMap.get(DcMotor.class, "back_right_motor");
+        frontLeftMotor = hwMap.get(DcMotor.class, "flm");
+        frontRightMotor = hwMap.get(DcMotor.class, "frm");
+        backLeftMotor = hwMap.get(DcMotor.class, "blm");
+        backRightMotor = hwMap.get(DcMotor.class, "brm");
 
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
