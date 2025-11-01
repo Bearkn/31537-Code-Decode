@@ -8,8 +8,13 @@ public class Intake {
     public DcMotor intakeMotor;
     public Servo hardStop;
 
+    public boolean hardStopActivated = false;
+
+    public boolean turretSpinIntake = false;
+
     public boolean spinIntake = false;
-    public double speed = 1;
+    public boolean reverseIntake = false;
+    public double speed = .9;
 
     public void init(HardwareMap hwMap) {
         intakeMotor = hwMap.get(DcMotor.class, "intake");
@@ -23,8 +28,23 @@ public class Intake {
         hardStop.setPosition(angle);
     }
 
+
+    public void hardStopPos(boolean activated){
+        if(activated){
+                setServoPos(.6);
+        } else {
+                setServoPos(.35);
+            }
+        }
+
     public void spin() {
-        if (spinIntake == true) {
+        if(turretSpinIntake) {
+            speed = .6;
+            intakeMotor.setPower(-speed);
+        } else if(reverseIntake){
+            speed = .5;
+            intakeMotor.setPower(speed);
+        } else if (spinIntake) {
             intakeMotor.setPower(-speed);
         } else {
             intakeMotor.setPower(0);

@@ -1,17 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.math.MathFunctions;
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.mechanism.GoalAprilTagTracker;
 import org.firstinspires.ftc.teamcode.mechanism.Intake;
 import org.firstinspires.ftc.teamcode.mechanism.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanism.Shooter;
@@ -25,6 +20,8 @@ public class Main extends OpMode {
     MecanumDrive drive = new MecanumDrive();
     Shooter shoot = new Shooter();
     Intake intake = new Intake();
+
+    int turretActivated = 0;
 //    GoalAprilTagTracker tracker = new GoalAprilTagTracker();
 
 //    boolean autoaim = false;
@@ -46,25 +43,57 @@ public class Main extends OpMode {
 
     @Override
     public void loop(){
-        shoot.spinTurret(shoot.turretAngle(false));
+        if(turretActivated == 0) {
+            shoot.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            shoot.spinTurret(shoot.turretAngle(false));
+        } else if (turretActivated == 1) {
+            shoot.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            shoot.turretMotor.setPower(0);
+            shoot.spinTurret(0);
+        } else if (turretActivated == 2) {
+            shoot.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            shoot.turretMotor.setPower(0);
+        }
         follower.update();
 //
+        if(gamepad1.leftBumperWasPressed()){
 
-
-        if(gamepad1.bWasPressed()){
-            intake.spinIntake = !intake.spinIntake;
-//            shoot.Kp += .01;
+            shoot.flyWheelActivated = !shoot.flyWheelActivated;
         }
+
+        if(shoot.flyWheelActivated){
+            shoot.spinShooter = true;
+            if(Math.abs(shoot.flyWheelMotor1.getVelocity() - shoot.speed) < 30) {
+                intake.turretSpinIntake = true;
+                intake.hardStopActivated = true;
+            }
+        } else {
+            shoot.spinShooter = false;
+            intake.turretSpinIntake = false;
+            intake.hardStopActivated = false;
+
+
+        }
+        if(gamepad1.rightBumperWasPressed()){
+            intake.speed = .9;
+            intake.spinIntake = !intake.spinIntake;
+        }
+
+        intake.reverseIntake = gamepad1.a;
 
         if(gamepad1.xWasPressed()){
             shoot.spinShooter = !shoot.spinShooter;
 //            shoot.speed += .01;
         }
 
-        if(gamepad1.aWasPressed()){
-//            shoot.Kp -= .01;
-//            shoot.speed += .05;
-            intake.setServoPos(.35);
+        if(gamepad1.dpadDownWasPressed()){
+            intake.hardStopActivated = !intake.hardStopActivated;
+        }
+        if(gamepad1.dpadUpWasPressed()){
+            turretActivated += 1;
+            if(turretActivated > 3){
+                turretActivated = 0;
+            }
         }
 
         if(gamepad1.yWasPressed()){
@@ -81,7 +110,7 @@ public class Main extends OpMode {
             shoot.speed -= 10;
 
         }
-
+        intake.hardStopPos(intake.hardStopActivated);
         intake.spin();
         shoot.spin();
         double y = -gamepad1.left_stick_y;
@@ -106,7 +135,14 @@ public class Main extends OpMode {
         telemetry.addData("shooterSpeed",shoot.speed);
         telemetry.addData("turret rotation",shoot.angleNormalize(shoot.turretMotor.getCurrentPosition()));
         telemetry.addData("shooter rpm",shoot.flyWheelMotor1.getVelocity());
-        telemetry.addData("distance from goal",shoot.turretAngle(true));
+        telemetry.addData("angle from goal",shoot.turretAngle(true));
+        telemetry.addData("turret actived",turretActivated);
+        telemetry.addData("shoot",shoot.shooting);
+        telemetry.addData("spinshooter",shoot.spinShooter);
+        telemetry.addData("hardstop", intake.hardStopActivated);
+        telemetry.addData("turretintakespin", intake.turretSpinIntake);
+
+
 
         telemetry.update();
 

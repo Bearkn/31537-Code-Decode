@@ -20,8 +20,8 @@ public class Constants {
 
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(6.123497d)
-            .forwardZeroPowerAcceleration(37.15385437064491)
-            .lateralZeroPowerAcceleration(-62.82025002338627)
+            .forwardZeroPowerAcceleration(-36.407322)
+            .lateralZeroPowerAcceleration(-77.7528)
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(
                     0.1,
                     0.0,
@@ -49,8 +49,8 @@ public class Constants {
             .leftRearMotorDirection(DcMotor.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotor.Direction.FORWARD)
             .rightRearMotorDirection(DcMotor.Direction.FORWARD)
-            .xVelocity(59.71242445)
-            .yVelocity(50.56735734);
+            .xVelocity(77.130985)
+            .yVelocity(64.510075);
 
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
@@ -60,7 +60,7 @@ public class Constants {
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
-            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
 
     public static Follower createFollower(HardwareMap hardwareMap) {

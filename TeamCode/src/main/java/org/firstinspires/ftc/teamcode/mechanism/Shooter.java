@@ -14,13 +14,19 @@ import org.firstinspires.ftc.teamcode.Main;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public class Shooter {
-
+    Intake intake = new Intake();
     private Follower follower;
     public DcMotorEx flyWheelMotor1,flyWheelMotor2, turretMotor;
 //    public double distanceFromGoal;
 
     public boolean spinShooter = false;
-    public double speed = 1400;
+
+    public boolean flyWheelActivated = false;
+
+    public boolean shooting = false;
+
+
+    public double speed = 1500;
 
     private final Pose startPose = new Pose(48, 96, Math.toRadians(0)); // Start Pose of our robot.
 
@@ -62,6 +68,8 @@ public class Shooter {
         }
 //
     }
+
+
     public double angleNormalize(int rotation) {
         double angle = (rotation / 10.0) % 360;
         if (angle > 180) {
@@ -71,7 +79,9 @@ public class Shooter {
         }
         return angle;
     }
-
+    public void speedCalc(double distance){
+        speed = distance * 25;
+    }
 
     public void spinTurret (double angle){
         angle = MathFunctions.clamp(angle, -90, 90);
@@ -100,6 +110,8 @@ public class Shooter {
 
             angleTurret = angleToGoal - (robotTheta* (180 / Math.PI));
 
+            speedCalc(distanceFromGoal);
+
 
         } else {
             Pose blueGoal = new Pose(8, 136, Math.toDegrees(0)); // Start Pose of our robot.
@@ -111,6 +123,9 @@ public class Shooter {
             double angleToGoal = Math.acos(distFromGoalY / distanceFromGoal) * (180 / Math.PI);
 
             angleTurret = angleToGoal - (robotTheta* (180 / Math.PI));
+
+            speedCalc(distanceFromGoal);
+
         }
 
 
