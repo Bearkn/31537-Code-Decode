@@ -1,17 +1,27 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
+
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.MathFunctions;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mechanism.GoalAprilTagTracker;
 import org.firstinspires.ftc.teamcode.mechanism.Intake;
 import org.firstinspires.ftc.teamcode.mechanism.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanism.Shooter;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp
 public class Main extends OpMode {
+    private Follower follower;
+    private final Pose startPose = new Pose(48, 96, Math.toRadians(0)); // Start Pose of our robot.
+
     MecanumDrive drive = new MecanumDrive();
     Shooter shoot = new Shooter();
     Intake intake = new Intake();
@@ -29,14 +39,21 @@ public class Main extends OpMode {
 //        tracker.init(hardwareMap);
         intake.init(hardwareMap);
         shoot.init(hardwareMap);
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(startPose);
+
     }
 
     @Override
     public void loop(){
+        shoot.spinTurret(shoot.turretAngle(false));
+        follower.update();
+//
+
 
         if(gamepad1.bWasPressed()){
             intake.spinIntake = !intake.spinIntake;
-//            shoot.speed -= .01;
+//            shoot.Kp += .01;
         }
 
         if(gamepad1.xWasPressed()){
@@ -45,6 +62,7 @@ public class Main extends OpMode {
         }
 
         if(gamepad1.aWasPressed()){
+//            shoot.Kp -= .01;
 //            shoot.speed += .05;
             intake.setServoPos(.35);
         }
@@ -52,6 +70,15 @@ public class Main extends OpMode {
         if(gamepad1.yWasPressed()){
 //            shoot.speed -= .05;
             intake.setServoPos(.6);
+
+        }
+
+        if(gamepad1.dpadLeftWasPressed()){
+            shoot.speed += 10;
+        }
+
+        if(gamepad1.dpadRightWasPressed()){
+            shoot.speed -= 10;
 
         }
 
@@ -66,20 +93,27 @@ public class Main extends OpMode {
         if (x >= -tolerance && x <= tolerance) {
             x = 0;
         }
-        if (turn >= -tolerance && turn <= tolerance) {
+        if (turn >= -tolerance && turn <= .1) {
             turn = 0;
         }
 //        tracker.update();
         telemetry.addData("Heading", drive.imu.getHeading(AngleUnit.DEGREES));
-        telemetry.addData("x_drive", x);
-        telemetry.addData("y_drive", y);
-        telemetry.addData("t_drive", turn);
+        telemetry.addData("x:", follower.getPose().getX());
+        telemetry.addData("y:",follower.getPose().getY());
         telemetry.addData("servo Angle",intake.hardStop.getPosition());
         telemetry.addData("intakeOn",intake.spinIntake);
         telemetry.addData("shooterOn",shoot.spinShooter);
         telemetry.addData("shooterSpeed",shoot.speed);
-        telemetry.addData("turret rotation",shoot.turretMotor.getPosition());
+        telemetry.addData("turret rotation",shoot.angleNormalize(shoot.turretMotor.getCurrentPosition()));
         telemetry.addData("shooter rpm",shoot.flyWheelMotor1.getVelocity());
+        telemetry.addData("distance from goal",shoot.turretAngle(true));
+
+        telemetry.update();
+
+//        telemetry.addData("error", shoot.spinTurret(60));
+
+
+
 
 
 

@@ -41,10 +41,10 @@ public class Constants {
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
-            .rightFrontMotorName("front_right_motor")
-            .rightRearMotorName("back_right_motor")
-            .leftRearMotorName("back_left_motor")
-            .leftFrontMotorName("front_left_motor")
+            .rightFrontMotorName("frm")
+            .rightRearMotorName("brm")
+            .leftRearMotorName("blm")
+            .leftFrontMotorName("flm")
             .leftFrontMotorDirection(DcMotor.Direction.REVERSE)
             .leftRearMotorDirection(DcMotor.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotor.Direction.FORWARD)
@@ -54,13 +54,13 @@ public class Constants {
 
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(.5)
-            .strafePodX(-5)
+            .forwardPodY(1.5)
+            .strafePodX(-6.5)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
-            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
-            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
 
     public static Follower createFollower(HardwareMap hardwareMap) {
