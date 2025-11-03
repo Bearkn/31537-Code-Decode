@@ -13,13 +13,14 @@ import org.firstinspires.ftc.teamcode.mechanism.Shooter;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp
-public class Main extends OpMode {
+public class RED extends OpMode {
     private Follower follower;
-    private final Pose startPose = new Pose(48, 96, Math.toRadians(0)); // Start Pose of our robot.
-
+    private final Pose startPose = new Pose(24, -64, 0); // Start Pose of our robot.
     MecanumDrive drive = new MecanumDrive();
     Shooter shoot = new Shooter();
     Intake intake = new Intake();
+
+    boolean spinshooter = false;
 
     int turretActivated = 0;
 //    GoalAprilTagTracker tracker = new GoalAprilTagTracker();
@@ -45,8 +46,9 @@ public class Main extends OpMode {
     public void loop(){
         if(turretActivated == 0) {
             shoot.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            shoot.spinTurret(shoot.turretAngle(false));
+            shoot.spinTurret(shoot.turretAngle(true));
         } else if (turretActivated == 1) {
+            shoot.speed = 1550;
             shoot.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             shoot.turretMotor.setPower(0);
             shoot.spinTurret(0);
@@ -56,23 +58,37 @@ public class Main extends OpMode {
         }
         follower.update();
 //
-        if(gamepad1.leftBumperWasPressed()){
+        if(gamepad1.left_bumper){
 
-            shoot.flyWheelActivated = !shoot.flyWheelActivated;
-        }
-
-        if(shoot.flyWheelActivated){
-            shoot.spinShooter = true;
+//            shoot.flyWheelActivated = !shoot.flyWheelActivated;
             if(Math.abs(shoot.flyWheelMotor1.getVelocity() - shoot.speed) < 30) {
                 intake.turretSpinIntake = true;
                 intake.hardStopActivated = true;
             }
         } else {
-            shoot.spinShooter = false;
-            intake.turretSpinIntake = false;
+                intake.turretSpinIntake = false;
             intake.hardStopActivated = false;
+            }
 
+//        if(shoot.flyWheelActivated){
+////            shoot.speed = 1500;
+//            if(Math.abs(shoot.flyWheelMotor1.getVelocity() - shoot.speed) < 30) {
+//                intake.turretSpinIntake = true;
+//                intake.hardStopActivated = true;
+//            }
+//        } else {
+//            intake.turretSpinIntake = false;
+//            intake.hardStopActivated = false;
+//        }
 
+        if(gamepad1.dpadDownWasPressed()){
+            spinshooter = !spinshooter;
+        }
+
+        if(spinshooter){
+            shoot.spinShooter = true;
+        } else {
+            shoot.spinShooter = false;
         }
         if(gamepad1.rightBumperWasPressed()){
             intake.speed = .9;
@@ -87,7 +103,7 @@ public class Main extends OpMode {
         }
 
         if(gamepad1.dpadDownWasPressed()){
-            intake.hardStopActivated = !intake.hardStopActivated;
+            shoot.teamColor = !shoot.teamColor;
         }
         if(gamepad1.dpadUpWasPressed()){
             turretActivated += 1;
@@ -103,11 +119,11 @@ public class Main extends OpMode {
         }
 
         if(gamepad1.dpadLeftWasPressed()){
-            shoot.speed += 10;
+            shoot.speedChange += 500;
         }
 
         if(gamepad1.dpadRightWasPressed()){
-            shoot.speed -= 10;
+            shoot.speedChange -= 500;
 
         }
         intake.hardStopPos(intake.hardStopActivated);
@@ -141,6 +157,10 @@ public class Main extends OpMode {
         telemetry.addData("spinshooter",shoot.spinShooter);
         telemetry.addData("hardstop", intake.hardStopActivated);
         telemetry.addData("turretintakespin", intake.turretSpinIntake);
+        telemetry.addData("Are we Red Team", shoot.teamColor);
+        telemetry.addData("speed of shooter", shoot.speedChange);
+
+
 
 
 

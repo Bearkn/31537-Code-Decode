@@ -5,12 +5,9 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.MathFunctions;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.Main;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public class Shooter {
@@ -21,14 +18,18 @@ public class Shooter {
 
     public boolean spinShooter = false;
 
+    public boolean teamColor = true;
+
     public boolean flyWheelActivated = false;
 
     public boolean shooting = false;
 
+    public double speedChange = 57000;
+
 
     public double speed = 1500;
 
-    private final Pose startPose = new Pose(48, 96, Math.toRadians(0)); // Start Pose of our robot.
+    private final Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
 
 
     double integralSum = 0;
@@ -80,7 +81,7 @@ public class Shooter {
         return angle;
     }
     public void speedCalc(double distance){
-        speed = distance * 25;
+        speed = Math.sqrt(distance * speedChange);
     }
 
     public void spinTurret (double angle){
@@ -101,28 +102,32 @@ public class Shooter {
         Pose RobotPose = new Pose(robotX, robotY, Math.toDegrees(robotTheta));
         double angleTurret = 0;
         if (red) {
-            Pose redGoal = new Pose(136, 136, Math.toDegrees(0)); // Start Pose of our robot.
-            double distanceFromGoal = Math.sqrt(Math.pow(robotX - redGoal.getPose().getX(), 2) + Math.pow(robotY - redGoal.getPose().getY(), 2));
+            Pose redGoal = new Pose(63, 64.5, Math.toDegrees(0)); // Start Pose of our robot.
+            double distanceFromGoal = Math.sqrt(Math.pow(robotX - 64, 2) + Math.pow(robotY - 63.5, 2));
 
-            double distFromGoalY = redGoal.getPose().getY() - robotY;
+            double distFromGoalY = 63.5 - robotY;
 
             double angleToGoal = -(Math.acos(distFromGoalY / distanceFromGoal) * (180 / Math.PI));
 
             angleTurret = angleToGoal - (robotTheta* (180 / Math.PI));
 
+            angleTurret = angleTurret + 90;
+
             speedCalc(distanceFromGoal);
 
 
         } else {
-            Pose blueGoal = new Pose(8, 136, Math.toDegrees(0)); // Start Pose of our robot.
+            Pose blueGoal = new Pose(-64, 63.5, Math.toDegrees(0)); // Start Pose of our robot.
 
-            double distanceFromGoal = Math.sqrt(Math.pow(robotX - 8, 2) + Math.pow(robotY - 136, 2));
+            double distanceFromGoal = Math.sqrt(Math.pow(robotX - (-64), 2) + Math.pow(robotY - 63.5, 2));
 
-            double distFromGoalY =136 - robotY;
+            double distFromGoalY =63.5 - robotY;
 
-            double angleToGoal = Math.acos(distFromGoalY / distanceFromGoal) * (180 / Math.PI);
+            double angleToGoal = -(Math.acos(distFromGoalY / distanceFromGoal) * (180 / Math.PI));
 
             angleTurret = angleToGoal - (robotTheta* (180 / Math.PI));
+            angleTurret = angleTurret + 180;
+
 
             speedCalc(distanceFromGoal);
 
