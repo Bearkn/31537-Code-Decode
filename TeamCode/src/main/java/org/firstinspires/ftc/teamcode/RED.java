@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -10,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mechanism.Intake;
 import org.firstinspires.ftc.teamcode.mechanism.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanism.Shooter;
+import org.firstinspires.ftc.teamcode.mechanism.Vision;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp
@@ -19,6 +22,8 @@ public class RED extends OpMode {
     MecanumDrive drive = new MecanumDrive();
     Shooter shoot = new Shooter();
     Intake intake = new Intake();
+
+    Vision vision = new Vision();
 
     boolean spinshooter = false;
 
@@ -37,6 +42,7 @@ public class RED extends OpMode {
 //        tracker.init(hardwareMap);
         intake.init(hardwareMap);
         shoot.init(hardwareMap);
+        vision.init(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
 
@@ -142,25 +148,31 @@ public class RED extends OpMode {
             turn = 0;
         }
 //        tracker.update();
-        telemetry.addData("Heading", drive.imu.getHeading(AngleUnit.DEGREES));
-        telemetry.addData("x:", follower.getPose().getX());
-        telemetry.addData("y:",follower.getPose().getY());
-        telemetry.addData("servo Angle",intake.hardStop.getPosition());
-        telemetry.addData("intakeOn",intake.spinIntake);
-        telemetry.addData("shooterOn",shoot.spinShooter);
-        telemetry.addData("shooterSpeed",shoot.speed);
-        telemetry.addData("turret rotation",shoot.angleNormalize(shoot.turretMotor.getCurrentPosition()));
-        telemetry.addData("shooter rpm",shoot.flyWheelMotor1.getVelocity());
-        telemetry.addData("angle from goal",shoot.turretAngle(true));
-        telemetry.addData("turret actived",turretActivated);
-        telemetry.addData("shoot",shoot.shooting);
-        telemetry.addData("spinshooter",shoot.spinShooter);
-        telemetry.addData("hardstop", intake.hardStopActivated);
-        telemetry.addData("turretintakespin", intake.turretSpinIntake);
-        telemetry.addData("Are we Red Team", shoot.teamColor);
-        telemetry.addData("speed of shooter", shoot.speedChange);
+//        telemetry.addData("Heading", drive.imu.getHeading(AngleUnit.DEGREES));
+//        telemetry.addData("x:", follower.getPose().getX());
+//        telemetry.addData("y:",follower.getPose().getY());
+//        telemetry.addData("servo Angle",intake.hardStop.getPosition());
+//        telemetry.addData("intakeOn",intake.spinIntake);
+//        telemetry.addData("shooterOn",shoot.spinShooter);
+//        telemetry.addData("shooterSpeed",shoot.speed);
+//        telemetry.addData("turret rotation",shoot.angleNormalize(shoot.turretMotor.getCurrentPosition()));
+//        telemetry.addData("shooter rpm",shoot.flyWheelMotor1.getVelocity());
+//        telemetry.addData("angle from goal",shoot.turretAngle(true));
+//        telemetry.addData("turret actived",turretActivated);
+//        telemetry.addData("shoot",shoot.shooting);
+//        telemetry.addData("spinshooter",shoot.spinShooter);
+//        telemetry.addData("hardstop", intake.hardStopActivated);
+//        telemetry.addData("turretintakespin", intake.turretSpinIntake);
+//        telemetry.addData("Are we Red Team", shoot.teamColor);
+//        telemetry.addData("speed of shooter", shoot.speedChange);
+        vision.loop();
 
-
+        if(vision.llResult != null && vision.llResult.isValid()) {
+//            Pose3D botPoseMt2 = llResult.getBotpose_MT2();
+            telemetry.addData("tx", vision.llResult.getTx());
+            telemetry.addData("ty", vision.llResult.getTy());
+            telemetry.addData("ta", vision.llResult.getTa());
+        }
 
 
 

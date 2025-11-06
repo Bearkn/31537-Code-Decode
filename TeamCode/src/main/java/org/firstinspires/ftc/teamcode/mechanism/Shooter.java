@@ -85,7 +85,7 @@ public class Shooter {
     }
 
     public void spinTurret (double angle){
-        angle = MathFunctions.clamp(angle, -90, 90);
+        angle = MathFunctions.clamp(angle, -75, 75);
         double error = angle - angleNormalize(turretMotor.getCurrentPosition());
         if (Math.abs(error) > -.5 ) {
             turretMotor.setPower(MathFunctions.clamp(error * .05, -1, 1));
