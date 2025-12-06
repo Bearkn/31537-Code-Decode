@@ -51,6 +51,7 @@ public class BasicMoveAuton extends OpMode{
         SHOOT2,
         SETUPSECONDROW,
         INTAKESECONDROW,
+        DONOTHIT,
         GOTOSHOOT2,
         SHOOT3,
         SETUPTHIRDROW,
@@ -58,7 +59,7 @@ public class BasicMoveAuton extends OpMode{
         SETUPGATE
     }
     PathState Pathstate;
-    public PathChain path1,path2,path3,path4,path5,path6,path7,path8,path9;
+    public PathChain path1,path2,path3,path4,path5,path6,path7,path8,path9,donothit;
 
     public void buildPaths() {
         /* This is our scorePreload path. We are using a BezierLine, which is a straight line. */
@@ -91,8 +92,13 @@ public class BasicMoveAuton extends OpMode{
                 .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180))
                 .build();
 
+        donothit = follower.pathBuilder()
+                .addPath(new BezierLine(new Pose(-60,-12),new Pose(-50, -12)))
+                .setLinearHeadingInterpolation(Math.toRadians(0),Math.toRadians(0))
+                .build();
+
         path6 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-56,-12),scorePose.getPose()))
+                .addPath(new BezierLine(new Pose(-50,-12),scorePose.getPose()))
                 .setLinearHeadingInterpolation(Math.toRadians(180), scorePose.getHeading())
                 .build();
 
@@ -178,12 +184,19 @@ public class BasicMoveAuton extends OpMode{
             case INTAKESECONDROW:
                 if (!follower.isBusy()) {
                     follower.followPath(path5,true);
+                    setPathState(PathState.DONOTHIT);
+                    shooter.spinShooter = true;
+                }
+                break;
+            case DONOTHIT:
+                if (follower.getPose().getX() < -58) {
+                    follower.followPath(donothit,true);
                     setPathState(PathState.GOTOSHOOT2);
                     shooter.spinShooter = true;
                 }
                 break;
             case GOTOSHOOT2:
-                if(follower.getPose().getX() < -58){
+                if(!follower.isBusy()){
                     follower.followPath(path6);
                     setPathState(PathState.SHOOT3);
                 }
