@@ -12,8 +12,11 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public class Shooter {
     Intake intake = new Intake();
+
+    Vision vision = new Vision();
+
     private Follower follower;
-    public DcMotorEx flyWheelMotor1,flyWheelMotor2, turretMotor;
+    public DcMotorEx flyWheelMotor1, flyWheelMotor2, turretMotor;
 //    public double distanceFromGoal;
 
     public boolean spinShooter = false;
@@ -27,7 +30,7 @@ public class Shooter {
     public double speedChange = 57000;
 
 
-    public double speed = 1500;
+    public double speed = 1800;
 
     private final Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
 
@@ -42,7 +45,7 @@ public class Shooter {
     ElapsedTime timer = new ElapsedTime();
     private double lastError = 0;
 
-//    Main main = new Main();
+    //    Main main = new Main();
     public void init(HardwareMap hwMap) {
         flyWheelMotor1 = hwMap.get(DcMotorEx.class, "fly1");
         flyWheelMotor2 = hwMap.get(DcMotorEx.class, "fly2");
@@ -56,11 +59,10 @@ public class Shooter {
         follower.setStartingPose(startPose);
 
 
-
     }
 
-    public void spin(){
-        if(spinShooter ){
+    public void spin() {
+        if (spinShooter) {
             flyWheelMotor1.setVelocity(speed);
             flyWheelMotor2.setVelocity(-speed);
         } else {
@@ -80,19 +82,27 @@ public class Shooter {
         }
         return angle;
     }
-    public void speedCalc(double distance){
-        speed = Math.sqrt(distance * speedChange);
+
+    public void speedCalc(double distance) {
+
+        if (distance >2) {
+            speed = 1800;
+        } else {
+            speed = 2200;
+        }
+//        speed = Math.sqrt(distance * speedChange);
     }
 
-    public void spinTurret (double angle){
+    public void spinTurret(double angle) {
         angle = MathFunctions.clamp(angle, -75, 75);
         double error = angle - angleNormalize(turretMotor.getCurrentPosition());
-        if (Math.abs(error) > -.5 ) {
+        if (Math.abs(error) > -.5) {
             turretMotor.setPower(MathFunctions.clamp(error * .05, -1, 1));
         } else {
             turretMotor.setPower(0);
         }
     }
+
 
     public double turretAngle(boolean red) {
         follower.update();
@@ -109,7 +119,7 @@ public class Shooter {
 
             double angleToGoal = -(Math.acos(distFromGoalY / distanceFromGoal) * (180 / Math.PI));
 
-            angleTurret = angleToGoal - (robotTheta* (180 / Math.PI));
+            angleTurret = angleToGoal - (robotTheta * (180 / Math.PI));
 
             angleTurret = angleTurret + 90;
 
@@ -121,11 +131,11 @@ public class Shooter {
 
             double distanceFromGoal = Math.sqrt(Math.pow(robotX - (-64), 2) + Math.pow(robotY - 63.5, 2));
 
-            double distFromGoalY =63.5 - robotY;
+            double distFromGoalY = 63.5 - robotY;
 
             double angleToGoal = -(Math.acos(distFromGoalY / distanceFromGoal) * (180 / Math.PI));
 
-            angleTurret = angleToGoal - (robotTheta* (180 / Math.PI));
+            angleTurret = angleToGoal - (robotTheta * (180 / Math.PI));
             angleTurret = angleTurret + 180;
 
 
@@ -147,6 +157,37 @@ public class Shooter {
 //
 //        double output = (error * Kp) + (derivative * Kd)  + (integralSum * Ki) + (reference * Kf);
 //        return output;
+
+    public void shootAuton() {
+
+        if (Math.abs(flyWheelMotor1.getVelocity() - 1800) < 50) {
+            intake.turretSpinIntake = true;
+            intake.hardStopActivated = true;
+
+        } else {
+//           intake.turretSpinIntake = false;
+            intake.hardStopActivated = false;
+        }
+
     }
+
+    public void turretAuton(){
+        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        if(vision.llResult != null && vision.llResult.isValid() && Math.abs(turretMotor.getCurrentPosition()) < 450) {
+            if(Math.abs(vision.llResult.getTx()) > .5) {
+                turretMotor.setPower(MathFunctions.clamp(-(vision.llResult.getTx() / 40), -.4, .4));
+            } else {
+                turretMotor.setPower(0);
+            }
+        } else {
+            spinTurret(0);
+        }
+    }
+
+}
+
+
+
 
 

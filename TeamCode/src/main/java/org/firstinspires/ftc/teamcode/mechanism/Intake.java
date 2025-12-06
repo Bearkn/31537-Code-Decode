@@ -14,7 +14,7 @@ public class Intake {
 
     public boolean spinIntake = false;
     public boolean reverseIntake = false;
-    public double speed = .9;
+    public double speed = 1;
 
     public void init(HardwareMap hwMap) {
         intakeMotor = hwMap.get(DcMotor.class, "intake");
@@ -39,12 +39,13 @@ public class Intake {
 
     public void spin() {
         if(turretSpinIntake) {
-            speed = 1;
+            speed = .7;
             intakeMotor.setPower(-speed);
         } else if(reverseIntake){
             speed = .5;
             intakeMotor.setPower(speed);
         } else if (spinIntake) {
+            speed = .7;
             intakeMotor.setPower(-speed);
         } else {
             intakeMotor.setPower(0);
