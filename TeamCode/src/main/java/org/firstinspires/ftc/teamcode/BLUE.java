@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.MathFunctions;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,21 +13,25 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mechanism.Intake;
 import org.firstinspires.ftc.teamcode.mechanism.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanism.Shooter;
+import org.firstinspires.ftc.teamcode.mechanism.Vision;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp
 public class BLUE extends OpMode {
     private Follower follower;
-    private final Pose startPose = new Pose(-24, -64, 3.14); // Start Pose of our robot.
+    private final Pose startPose = new Pose(24, -64, 0); // Start Pose of our robot.
     MecanumDrive drive = new MecanumDrive();
     Shooter shoot = new Shooter();
     Intake intake = new Intake();
+
+    Vision vision = new Vision();
+
+    boolean spinshooter = false;
 
     int turretActivated = 0;
 //    GoalAprilTagTracker tracker = new GoalAprilTagTracker();
 
 //    boolean autoaim = false;
-boolean spinshooter = false;
 
     double tolerance = .05;
 
@@ -36,18 +43,31 @@ boolean spinshooter = false;
 //        tracker.init(hardwareMap);
         intake.init(hardwareMap);
         shoot.init(hardwareMap);
+        vision.init(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
-
+        vision.limelight.pipelineSwitch(1); //april tag 24
+        vision.limelight.start();
     }
 
     @Override
     public void loop(){
         if(turretActivated == 0) {
             shoot.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            shoot.spinTurret(shoot.turretAngle(false));
+
+            if(vision.llResult != null && vision.llResult.isValid() && Math.abs(shoot.turretMotor.getCurrentPosition()) < 450) {
+                if(Math.abs(vision.llResult.getTx()) > .5) {
+                    shoot.turretMotor.setPower(MathFunctions.clamp(-(vision.llResult.getTx() / 40), -.2, .2));
+                } else {
+                    shoot.turretMotor.setPower(0);
+                }
+            } else {
+                shoot.spinTurret(0);
+            }
+
+//            shoot.turretAuton();
         } else if (turretActivated == 1) {
-            shoot.speed = 1550;
+            shoot.speed = shoot.speedChange;
             shoot.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             shoot.turretMotor.setPower(0);
             shoot.spinTurret(0);
@@ -57,37 +77,27 @@ boolean spinshooter = false;
         }
         follower.update();
 //
-//        if(gamepad1.leftBumperWasPressed()){
+        if(gamepad1.left_bumper) {
+            spinshooter = true;
 //
-//            shoot.flyWheelActivated = !shoot.flyWheelActivated;
-//        }
+//            intake.turretSpinIntake = true;
+//            intake.hardStopActivated = true;
 //
-//        if(shoot.flyWheelActivated){
-////            shoot.speed = 1500;
-//            shoot.spinShooter = true;
-//            if(Math.abs(shoot.flyWheelMotor1.getVelocity() - shoot.speed) < 30) {
-//                intake.turretSpinIntake = true;
-//                intake.hardStopActivated = true;
-//            }
-//        } else {
-//            shoot.spinShooter = false;
-//            intake.turretSpinIntake = false;
-//            intake.hardStopActivated = false;
-//
-//
-//        }
-
-        if(gamepad1.left_bumper){
-
-//            shoot.flyWheelActivated = !shoot.flyWheelActivated;
-//            if(Math.abs(shoot.flyWheelMotor1.getVelocity() - shoot.speed) < 30) {
+////            shoot.flyWheelActivated = !shoot.flyWheelActivated;
+            if (Math.abs(shoot.flyWheelMotor1.getVelocity() - shoot.speed) < 50) {
                 intake.turretSpinIntake = true;
                 intake.hardStopActivated = true;
-//            }
+
+            } else {
+//                intake.turretSpinIntake = false;
+                intake.hardStopActivated = false;
+            }
         } else {
             intake.turretSpinIntake = false;
             intake.hardStopActivated = false;
+            spinshooter = false;
         }
+
 
 //        if(shoot.flyWheelActivated){
 ////            shoot.speed = 1500;
@@ -110,7 +120,7 @@ boolean spinshooter = false;
             shoot.spinShooter = false;
         }
         if(gamepad1.rightBumperWasPressed()){
-            intake.speed = .9;
+            intake.speed = .7;
             intake.spinIntake = !intake.spinIntake;
         }
 
@@ -178,8 +188,16 @@ boolean spinshooter = false;
         telemetry.addData("turretintakespin", intake.turretSpinIntake);
         telemetry.addData("Are we Red Team", shoot.teamColor);
         telemetry.addData("speed of shooter", shoot.speedChange);
+        vision.loop();
 
+        if(vision.llResult != null && vision.llResult.isValid()) {
+//            Pose3D botPoseMt2 = llResult.getBotpose_MT2();
+            telemetry.addData("tx", vision.llResult.getTx());
+            telemetry.addData("ty", vision.llResult.getTy());
+            telemetry.addData("ta", vision.llResult.getTa());
+            shoot.speedCalc(vision.llResult.getTy());
 
+        }
 
 
 
@@ -219,6 +237,6 @@ boolean spinshooter = false;
 
 
 //        drive.driveRobotRelative(y,x,turn);
-        drive.driveFieldRelative(-y,-x,turn);
+        drive.driveFieldRelative(y,x,turn);
     }
 }

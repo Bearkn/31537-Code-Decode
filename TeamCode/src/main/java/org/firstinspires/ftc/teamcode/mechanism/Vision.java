@@ -22,8 +22,7 @@ public class Vision {
 
     public void init(HardwareMap hwMap) {
         limelight = hwMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(0); //april tag 24
-        limelight.start();
+
 
 
 

@@ -39,7 +39,7 @@ public class Intake {
 
     public void spin() {
         if(turretSpinIntake) {
-            speed = .7;
+            speed = .5;
             intakeMotor.setPower(-speed);
         } else if(reverseIntake){
             speed = .5;

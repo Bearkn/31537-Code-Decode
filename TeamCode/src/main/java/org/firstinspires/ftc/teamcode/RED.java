@@ -46,6 +46,8 @@ public class RED extends OpMode {
         vision.init(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
+        vision.limelight.pipelineSwitch(0); //april tag 24
+        vision.limelight.start();
 
     }
 
@@ -56,7 +58,7 @@ public class RED extends OpMode {
 
             if(vision.llResult != null && vision.llResult.isValid() && Math.abs(shoot.turretMotor.getCurrentPosition()) < 450) {
                 if(Math.abs(vision.llResult.getTx()) > .5) {
-                    shoot.turretMotor.setPower(MathFunctions.clamp(-(vision.llResult.getTx() / 40), -.4, .4));
+                    shoot.turretMotor.setPower(MathFunctions.clamp(-(vision.llResult.getTx() / 40), -.2, .2));
                 } else {
                     shoot.turretMotor.setPower(0);
                 }
@@ -83,7 +85,7 @@ public class RED extends OpMode {
 //            intake.hardStopActivated = true;
 //
 ////            shoot.flyWheelActivated = !shoot.flyWheelActivated;
-            if (Math.abs(shoot.flyWheelMotor1.getVelocity() - shoot.speed) < 50) {
+            if (Math.abs(shoot.flyWheelMotor1.getVelocity() - shoot.speed) < 25) {
                 intake.turretSpinIntake = true;
                 intake.hardStopActivated = true;
 

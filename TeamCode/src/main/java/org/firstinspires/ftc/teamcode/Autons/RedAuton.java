@@ -5,9 +5,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.MathFunctions;
-import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
-import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -18,9 +16,9 @@ import org.firstinspires.ftc.teamcode.mechanism.Shooter;
 import org.firstinspires.ftc.teamcode.mechanism.Vision;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "BlueSide", group = "Autons")
+@Autonomous(name = "RedSide", group = "Autons")
 
-public class BasicMoveAuton extends OpMode{
+public class RedAuton extends OpMode{
     private Follower follower;
 
     Shooter shooter = new Shooter();
@@ -39,8 +37,8 @@ public class BasicMoveAuton extends OpMode{
 
 
 
-    private final Pose startPose = new Pose(-39, 60.5, Math.toRadians(90)); // Start Pose of our robot.
-    private final Pose scorePose = new Pose(-20, 15.475, Math.toRadians(127)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose startPose = new Pose(39, 60.5, Math.toRadians(90)); // Start Pose of our robot.
+    private final Pose scorePose = new Pose(20, 15.475, Math.toRadians(53)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
 
 
     public enum PathState {
@@ -66,49 +64,49 @@ public class BasicMoveAuton extends OpMode{
 //        move.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
 
         path1 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-39, 60.5),new Pose(-20, 15.475)))
-                .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(127))
+                .addPath(new BezierLine(new Pose(39, 60.5),new Pose(20, 15.475)))
+                .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(53))
                 .build();
 
         path2 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-20, 15.475),new Pose(-60, 12)))
-                .setLinearHeadingInterpolation(Math.toRadians(127), Math.toRadians(180))
+                .addPath(new BezierLine(new Pose(20, 15.475),new Pose(60, 12)))
+                .setLinearHeadingInterpolation(Math.toRadians(53), Math.toRadians(0))
                 .setTangentHeadingInterpolation()
                 .build();
 
         path3 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-54,12),scorePose.getPose()))
-                .setLinearHeadingInterpolation(Math.toRadians(180), scorePose.getHeading())
+                .addPath(new BezierLine(new Pose(54,12),scorePose.getPose()))
+                .setLinearHeadingInterpolation(Math.toRadians(0), scorePose.getHeading())
                 .build();
 
         path4 = follower.pathBuilder()
-                .addPath(new BezierLine(scorePose.getPose(),new Pose(-20, -12)))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), Math.toRadians(180))
+                .addPath(new BezierLine(scorePose.getPose(),new Pose(20, -12)))
+                .setLinearHeadingInterpolation(scorePose.getHeading(), Math.toRadians(0))
                 .build();
 
         path5 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-20,-12),new Pose(-72, -12)))
-                .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180))
+                .addPath(new BezierLine(new Pose(20,-12),new Pose(72, -12)))
+                .setLinearHeadingInterpolation(Math.toRadians(0),Math.toRadians(0))
                 .build();
 
         path6 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-56,-12),scorePose.getPose()))
-                .setLinearHeadingInterpolation(Math.toRadians(180), scorePose.getHeading())
+                .addPath(new BezierLine(new Pose(60,-12),scorePose.getPose()))
+                .setLinearHeadingInterpolation(Math.toRadians(0), scorePose.getHeading())
                 .build();
 
         path7 = follower.pathBuilder()
-                .addPath(new BezierLine(scorePose.getPose(),new Pose(-20, -36)))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), Math.toRadians(180))
+                .addPath(new BezierLine(scorePose.getPose(),new Pose(20, -36)))
+                .setLinearHeadingInterpolation(scorePose.getHeading(), Math.toRadians(0))
                 .build();
 
         path8 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-20,-36),new Pose(-70, -36)))
-                .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180))
+                .addPath(new BezierLine(new Pose(20,-36),new Pose(70, -36)))
+                .setLinearHeadingInterpolation(Math.toRadians(0),Math.toRadians(0))
                 .build();
 
         path9 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-56,-36),new Pose(-36, 0)))
-                .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(0))
+                .addPath(new BezierLine(new Pose(56,-36),new Pose(36, 0)))
+                .setLinearHeadingInterpolation(Math.toRadians(0),Math.toRadians(180))
                 .build();
 
 
@@ -131,15 +129,15 @@ public class BasicMoveAuton extends OpMode{
 
 
             case SHOOT1:
-                    if (pathTimer.seconds() < 5 && pathTimer.seconds() > 2.5) {
+                if (pathTimer.seconds() < 5 && pathTimer.seconds() > 2.5) {
 
-                        shootBall = true;
-                    } else if (pathTimer.seconds() >= 5) {
-                        shooter.spinShooter = false;
-                        shootBall = false;
-                        setPathState(PathState.INTAKEFIRSTROW);
-                    }
-                    break;
+                    shootBall = true;
+                } else if (pathTimer.seconds() >= 5) {
+                    shooter.spinShooter = false;
+                    shootBall = false;
+                    setPathState(PathState.INTAKEFIRSTROW);
+                }
+                break;
 
             case INTAKEFIRSTROW:
 
@@ -152,7 +150,7 @@ public class BasicMoveAuton extends OpMode{
                 }
                 break;
             case GOTOSHOOT:
-                if(follower.getPose().getX() < -54){
+                if(follower.getPose().getX() > 54){
                     follower.followPath(path3);
                     setPathState(PathState.SHOOT2);
                 }
@@ -183,7 +181,7 @@ public class BasicMoveAuton extends OpMode{
                 }
                 break;
             case GOTOSHOOT2:
-                if(follower.getPose().getX() < -58){
+                if(follower.getPose().getX() > 60){
                     follower.followPath(path6);
                     setPathState(PathState.SHOOT3);
                 }
@@ -213,7 +211,7 @@ public class BasicMoveAuton extends OpMode{
                 }
                 break;
             case SETUPGATE:
-                if (follower.getPose().getX() < -56) {
+                if (follower.getPose().getX() > 56) {
                     follower.followPath(path9);
                 }
                 break;
@@ -244,7 +242,7 @@ public class BasicMoveAuton extends OpMode{
 //                    if(!follower.isBusy() && pathTimer.getElapsedTimeSeconds() < 3) {
 //
 //
-////                            shooter.turretAuton();
+    ////                            shooter.turretAuton();
 //
 //
 //                            if(vision.llResult != null && vision.llResult.isValid() && Math.abs(shooter.turretMotor.getCurrentPosition()) < 450) {
@@ -297,17 +295,17 @@ public class BasicMoveAuton extends OpMode{
 //            intake.hardStopActivated = true;
 //
 ////            shoot.flyWheelActivated = !shoot.flyWheelActivated;
-            shooter.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            if(vision.llResult != null && vision.llResult.isValid() && Math.abs(shooter.turretMotor.getCurrentPosition()) < 450) {
-                if(Math.abs(vision.llResult.getTx()) > .5) {
-                    shooter.turretMotor.setPower(MathFunctions.clamp(-(vision.llResult.getTx() / 40), -.25, .25));
-                } else {
-                    shooter.turretMotor.setPower(0);
-                }
+        if(vision.llResult != null && vision.llResult.isValid() && Math.abs(shooter.turretMotor.getCurrentPosition()) < 450) {
+            if(Math.abs(vision.llResult.getTx()) > .5) {
+                shooter.turretMotor.setPower(MathFunctions.clamp(-(vision.llResult.getTx() / 40), -.25, .25));
             } else {
-                shooter.spinTurret(0);
+                shooter.turretMotor.setPower(0);
             }
+        } else {
+            shooter.spinTurret(0);
+        }
         if(shootBall) {
 
             if (Math.abs(shooter.flyWheelMotor1.getVelocity() - shooter.speed) < 30) {
@@ -362,7 +360,7 @@ public class BasicMoveAuton extends OpMode{
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
-        vision.limelight.pipelineSwitch(1); //april tag 24
+        vision.limelight.pipelineSwitch(0); //april tag 24
         vision.limelight.start();
     }
     /** This method is called continuously after Init while waiting for "play". **/
