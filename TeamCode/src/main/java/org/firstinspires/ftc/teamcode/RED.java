@@ -179,7 +179,7 @@ public class RED extends OpMode {
         telemetry.addData("intakeOn",intake.spinIntake);
         telemetry.addData("shooterOn",shoot.spinShooter);
         telemetry.addData("shooterSpeed",shoot.speed);
-        telemetry.addData("turret rotation",shoot.angleNormalize(shoot.turretMotor.getCurrentPosition()));
+        telemetry.addData("turret rotation",shoot.turretMotor.getCurrentPosition());
         telemetry.addData("shooter rpm",shoot.flyWheelMotor1.getVelocity());
         telemetry.addData("angle from goal",shoot.turretAngle(true));
         telemetry.addData("turret actived",turretActivated);
