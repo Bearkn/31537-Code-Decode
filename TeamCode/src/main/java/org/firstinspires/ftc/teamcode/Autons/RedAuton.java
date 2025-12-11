@@ -91,13 +91,9 @@ public class RedAuton extends OpMode{
                 .setLinearHeadingInterpolation(Math.toRadians(0),Math.toRadians(0))
                 .build();
 
-        donothit = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(60,-12),new Pose(50, -12)))
-                .setLinearHeadingInterpolation(Math.toRadians(0),Math.toRadians(0))
-                .build();
 
         path6 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(50,-12),scorePose.getPose()))
+                .addPath(new BezierLine(new Pose(54,-12),scorePose.getPose()))
                 .setLinearHeadingInterpolation(Math.toRadians(0), scorePose.getHeading())
                 .build();
 
@@ -183,20 +179,20 @@ public class RedAuton extends OpMode{
             case INTAKESECONDROW:
                 if (!follower.isBusy()) {
                     follower.followPath(path5,true);
-                    setPathState(PathState.DONOTGETHIT);
-                    shooter.spinShooter = true;
-                }
-                break;
-
-            case DONOTGETHIT   :
-                if (follower.getPose().getX() > 58) {
-                    follower.followPath(donothit,true);
                     setPathState(PathState.GOTOSHOOT2);
                     shooter.spinShooter = true;
                 }
                 break;
+
+//            case DONOTGETHIT   :
+//                if (follower.getPose().getX() > 58) {
+//                    follower.followPath(donothit,true);
+//                    setPathState(PathState.GOTOSHOOT2);
+//                    shooter.spinShooter = true;
+//                }
+//                break;
             case GOTOSHOOT2:
-                if(!follower.isBusy()){
+                if(follower.getPose().getX() > 54){
                     follower.followPath(path6);
                     setPathState(PathState.SHOOT3);
                 }

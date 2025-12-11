@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @TeleOp
 public class BLUE extends OpMode {
     private Follower follower;
-    private final Pose startPose = new Pose(24, -64, 0); // Start Pose of our robot.
+    private final Pose startPose = new Pose(24, -64, 3.14); // Start Pose of our robot.
     MecanumDrive drive = new MecanumDrive();
     Shooter shoot = new Shooter();
     Intake intake = new Intake();
