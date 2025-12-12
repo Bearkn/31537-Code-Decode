@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @TeleOp
 public class BLUE extends OpMode {
     private Follower follower;
-    private final Pose startPose = new Pose(24, -64, 3.14); // Start Pose of our robot.
+    private final Pose startPose = new Pose(24, -64, 0); // Start Pose of our robot.
     MecanumDrive drive = new MecanumDrive();
     Shooter shoot = new Shooter();
     Intake intake = new Intake();
@@ -78,13 +78,12 @@ public class BLUE extends OpMode {
         follower.update();
 //
         if(gamepad1.left_bumper) {
-            spinshooter = true;
 //
 //            intake.turretSpinIntake = true;
 //            intake.hardStopActivated = true;
 //
 ////            shoot.flyWheelActivated = !shoot.flyWheelActivated;
-            if (Math.abs(shoot.flyWheelMotor1.getVelocity() - shoot.speed) < 50) {
+            if (shoot.flyWheelMotor1.getVelocity() - shoot.speed > -50 && shoot.flyWheelMotor1.getVelocity() - shoot.speed < 100) {
                 intake.turretSpinIntake = true;
                 intake.hardStopActivated = true;
 
@@ -95,7 +94,6 @@ public class BLUE extends OpMode {
         } else {
             intake.turretSpinIntake = false;
             intake.hardStopActivated = false;
-            spinshooter = false;
         }
 
 
@@ -110,7 +108,7 @@ public class BLUE extends OpMode {
 //            intake.hardStopActivated = false;
 //        }
 
-        if(gamepad1.dpadDownWasPressed()){
+        if(gamepad1.bWasPressed()){
             spinshooter = !spinshooter;
         }
 

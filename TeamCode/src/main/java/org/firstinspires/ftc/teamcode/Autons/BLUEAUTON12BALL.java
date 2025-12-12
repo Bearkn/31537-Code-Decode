@@ -2,12 +2,11 @@ package org.firstinspires.ftc.teamcode.Autons;
 
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.MathFunctions;
-import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
-import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -18,9 +17,9 @@ import org.firstinspires.ftc.teamcode.mechanism.Shooter;
 import org.firstinspires.ftc.teamcode.mechanism.Vision;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "BlueSide", group = "Autons")
+@Autonomous(name = "blueSide12", group = "Autons")
 
-public class BasicMoveAuton extends OpMode{
+public class BLUEAUTON12BALL extends OpMode{
     private Follower follower;
 
     Shooter shooter = new Shooter();
@@ -40,194 +39,231 @@ public class BasicMoveAuton extends OpMode{
 
 
     private final Pose startPose = new Pose(-39, 60.5, Math.toRadians(90)); // Start Pose of our robot.
-    private final Pose scorePose = new Pose(-20, 15.475, Math.toRadians(127)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
 
 
     public enum PathState {
-        FIRST,
-        SHOOT1,
-        INTAKEFIRSTROW,
-        GOTOSHOOT,
-        SHOOT2,
-        SETUPSECONDROW,
-        INTAKESECONDROW,
-        DONOTHIT,
-        GOTOSHOOT2,
-        SHOOT3,
-        SETUPTHIRDROW,
-        INTAKETHIRDROW,
-        SETUPGATE
+        ONE,
+        TWO,
+        THREE,
+        FOUR,
+        FIVE,
+        SIX,
+        SEVEN,
+        EIGHT,
+        NINE,
+        TEN,
+        ELEVEN,
+        TWELVE,
+        THIRTEEN,
+        FOURTEEN,
+        FIFTEEN
     }
     PathState Pathstate;
-    public PathChain path1,path2,path3,path4,path5,path6,path7,path8,path9,donothit;
+    public PathChain path1,path2,path3,path4,path5,path6,path7,path8,path9;
 
     public void buildPaths() {
-        /* This is our scorePreload path. We are using a BezierLine, which is a straight line. */
-//        move = new Path(new BezierLine(startPose, scorePose));
-//        move.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
-
-        path1 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-39, 60.5),new Pose(-20, 15.475)))
+        path1 = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(-39, 60.5), new Pose(-20, 15))
+                )
                 .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(127))
                 .build();
 
-        path2 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-20, 15.475),new Pose(-60, 12)))
-                .setLinearHeadingInterpolation(Math.toRadians(127), Math.toRadians(180))
+        path2 = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(-20, 15), new Pose(-60, 12))
+                )
                 .setTangentHeadingInterpolation()
                 .build();
 
-        path3 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-54,12),scorePose.getPose()))
-                .setLinearHeadingInterpolation(Math.toRadians(180), scorePose.getHeading())
+        path3 = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(-54, 12), new Pose(-56, 4))
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(90))
                 .build();
 
-        path4 = follower.pathBuilder()
-                .addPath(new BezierLine(scorePose.getPose(),new Pose(-20, -12)))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), Math.toRadians(180))
+        path4 = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(-56, 4), new Pose(-20, 15))
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(127))
                 .build();
 
-        path5 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-20,-12),new Pose(-72, -12)))
-                .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180))
+        path5 = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierCurve(
+                                new Pose(-20, 15),
+                                new Pose(-10, -17),
+                                new Pose(-64, -14)
+                        )
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(127), Math.toRadians(180))
                 .build();
 
-        donothit = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-60,-12),new Pose(-50, -12)))
-                .setLinearHeadingInterpolation(Math.toRadians(0),Math.toRadians(0))
+        path6 = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierCurve(
+                                new Pose(-58, -14),
+                                new Pose(-21, -5),
+                                new Pose(-20, 15)
+                        )
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(127))
                 .build();
 
-        path6 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-54,-12),scorePose.getPose()))
-                .setLinearHeadingInterpolation(Math.toRadians(180), scorePose.getHeading())
+        path7 = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierCurve(
+                                new Pose(-20, 15),
+                                new Pose(-3, -51),
+                                new Pose(-64, -36)
+                        )
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(127), Math.toRadians(180))
                 .build();
 
-        path7 = follower.pathBuilder()
-                .addPath(new BezierLine(scorePose.getPose(),new Pose(-20, -36)))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), Math.toRadians(180))
+        path8 = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(-58, -36.000), new Pose(-20, 15))
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(127))
                 .build();
 
-        path8 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-20,-36),new Pose(-70, -36)))
-                .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180))
+        path9 = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(-20, 15), new Pose(-40, 0))
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(127), Math.toRadians(180))
                 .build();
-
-        path9 = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(-56,-36),new Pose(-36, 0)))
-                .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(0))
-                .build();
-
-
 
     }
 
     public void autonomousPathUpdate() {
         switch (Pathstate) {
-            case FIRST:
+            case ONE:
                 // When the path is done\
                 intake.speed = .7;
                 intake.spinIntake = true;
                 shooter.spinShooter = true;
                 if (!follower.isBusy()) {
                     follower.followPath(path1);
-                    setPathState(PathState.SHOOT1);
+                    setPathState(PathState.TWO);
                 }
 
                 break;
 
 
-            case SHOOT1:
-                    if (pathTimer.seconds() < 5 && pathTimer.seconds() > 2.5) {
+            case TWO:
+                if (pathTimer.seconds() < 4 && pathTimer.seconds() > 1.5) {
 
-                        shootBall = true;
-                    } else if (pathTimer.seconds() >= 5) {
-                        shooter.spinShooter = false;
-                        shootBall = false;
-                        setPathState(PathState.INTAKEFIRSTROW);
-                    }
-                    break;
+                    shootBall = true;
+                } else if (pathTimer.seconds() >= 5) {
+                    shooter.spinShooter = false;
+                    shootBall = false;
+                    setPathState(PathState.THREE);
+                }
+                break;
 
-            case INTAKEFIRSTROW:
+            case THREE:
 
                 intake.speed = .8;
                 intake.spinIntake = true;
                 shooter.spinShooter = true;
                 if (!follower.isBusy()) {
                     follower.followPath(path2,.5,true);
-                    setPathState(PathState.GOTOSHOOT);
+                    setPathState(PathState.FOUR);
                 }
                 break;
-            case GOTOSHOOT:
-                if(follower.getPose().getX() < -54){
-                    follower.followPath(path3);
-                    setPathState(PathState.SHOOT2);
+            case FOUR:
+                if(follower.getPose().getX() < -53){
+                    follower.followPath(path3,.7,true);
+                    setPathState(PathState.FIVE);
                 }
                 break;
-            case SHOOT2:
-                if (pathTimer.seconds() < 5 && pathTimer.seconds() > 2.5) {
+            case FIVE:
+                if(pathTimer.seconds() >=2) {
+                    setPathState(PathState.SIX);
+                }
+                break;
+            case SIX:
+                if(!follower.isBusy()){
+                    follower.followPath(path4);
+                    setPathState(PathState.SEVEN);
+                }
+                break;
+            case SEVEN:
+                if (pathTimer.seconds() < 4 && pathTimer.seconds() > 2.5) {
 
                     shootBall = true;
                 } else if (pathTimer.seconds() >= 5) {
                     shooter.spinShooter = false;
                     shootBall = false;
-                    setPathState(PathState.SETUPSECONDROW);
+                    setPathState(PathState.EIGHT);
                 }
                 break;
-            case SETUPSECONDROW:
+            case EIGHT:
                 intake.speed = .9;
                 intake.spinIntake = true;
                 if (!follower.isBusy()) {
-                    follower.followPath(path4,true);
-                    setPathState(PathState.INTAKESECONDROW);
+                    follower.followPath(path5,true);
+                    setPathState(PathState.NINE);
                 }
                 break;
-            case INTAKESECONDROW:
-                if (!follower.isBusy()) {
-                    follower.followPath(path5,true);
-                    setPathState(PathState.GOTOSHOOT2);
+            case NINE:
+                if (follower.getPose().getX() < -58) {
+                    follower.followPath(path6,true);
+                    setPathState(PathState.TEN);
                     shooter.spinShooter = true;
                 }
                 break;
-//            case DONOTHIT:
-//                if (follower.getPose().getX() < -58) {
-//                    follower.followPath(donothit,true);
-//                    setPathState(PathState.GOTOSHOOT2);
-//                    shooter.spinShooter = true;
-//                }
-//                break;
-            case GOTOSHOOT2:
-                if(follower.getPose().getX() < -54){
-                    follower.followPath(path6);
-                    setPathState(PathState.SHOOT3);
-                }
-                break;
-            case SHOOT3:
-                if (pathTimer.seconds() < 5 && pathTimer.seconds() > 2.5) {
+            case TEN:
+                if (pathTimer.seconds() < 4 && pathTimer.seconds() > 2.5) {
 
                     shootBall = true;
                 } else if (pathTimer.seconds() >= 5) {
                     shooter.spinShooter = false;
                     shootBall = false;
-                    setPathState(PathState.SETUPTHIRDROW);
+                    setPathState(PathState.ELEVEN);
                 }
                 break;
-            case SETUPTHIRDROW:
+            case ELEVEN:
                 intake.speed = .8;
                 intake.spinIntake = true;
+                shooter.spinShooter = true;
                 if (!follower.isBusy()) {
                     follower.followPath(path7,true);
-                    setPathState(PathState.INTAKETHIRDROW);
+                    setPathState(PathState.TWELVE);
                 }
                 break;
-            case INTAKETHIRDROW:
+            case TWELVE:
+                if (follower.getPose().getX() < -58) {
+                    follower.followPath(path8,true);
+                    setPathState(PathState.THIRTEEN);
+                }
+                break;
+            case THIRTEEN:
+                if (pathTimer.seconds() < 4 && pathTimer.seconds() > 2.5) {
+
+                    shootBall = true;
+                } else if (pathTimer.seconds() >= 5) {
+                    shooter.spinShooter = false;
+                    shootBall = false;
+                    setPathState(PathState.FOURTEEN);
+                }
+                break;
+            case FOURTEEN:
                 if (!follower.isBusy()) {
-                    follower.followPath(path8,.5,true);
-                    setPathState(PathState.SETUPGATE);
-                }
-                break;
-            case SETUPGATE:
-                if (follower.getPose().getX() < -56) {
-                    follower.followPath(path9);
+                    follower.followPath(path9,true);
                 }
                 break;
         }
@@ -257,7 +293,7 @@ public class BasicMoveAuton extends OpMode{
 //                    if(!follower.isBusy() && pathTimer.getElapsedTimeSeconds() < 3) {
 //
 //
-////                            shooter.turretAuton();
+    ////                            shooter.turretAuton();
 //
 //
 //                            if(vision.llResult != null && vision.llResult.isValid() && Math.abs(shooter.turretMotor.getCurrentPosition()) < 450) {
@@ -310,22 +346,23 @@ public class BasicMoveAuton extends OpMode{
 //            intake.hardStopActivated = true;
 //
 ////            shoot.flyWheelActivated = !shoot.flyWheelActivated;
-            shooter.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            if(vision.llResult != null && vision.llResult.isValid() && Math.abs(shooter.turretMotor.getCurrentPosition()) < 450) {
-                if(Math.abs(vision.llResult.getTx()) > .5) {
-                    shooter.turretMotor.setPower(MathFunctions.clamp(-(vision.llResult.getTx() / 40), -.25, .25));
-                } else {
-                    shooter.turretMotor.setPower(0);
-                }
+        if(vision.llResult != null && vision.llResult.isValid() && Math.abs(shooter.turretMotor.getCurrentPosition()) < 450) {
+            if(Math.abs(vision.llResult.getTx()) > .5) {
+                shooter.turretMotor.setPower(MathFunctions.clamp(-(vision.llResult.getTx() / 40), -.25, .25));
             } else {
-                shooter.spinTurret(0);
+                shooter.turretMotor.setPower(0);
             }
+        } else {
+            shooter.spinTurret(0);
+        }
         if(shootBall) {
 
-            if (Math.abs(shooter.flyWheelMotor1.getVelocity() - shooter.speed) < 30) {
+            if (shooter.flyWheelMotor1.getVelocity() - shooter.speed > -25 && shooter.flyWheelMotor1.getVelocity() - shooter.speed < 75) {
                 intake.turretSpinIntake = true;
                 activateHardstop = true;
+                intake.speed = 1;
 
             } else {
 //                intake.turretSpinIntake = false;
@@ -353,7 +390,7 @@ public class BasicMoveAuton extends OpMode{
             telemetry.addData("tx", vision.llResult.getTx());
             telemetry.addData("ty", vision.llResult.getTy());
             telemetry.addData("ta", vision.llResult.getTa());
-            shooter.speedCalc(vision.llResult.getTy());
+//            shooter.speedCalc(vision.llResult.getTy());
 
             telemetry.update();
 
@@ -363,8 +400,8 @@ public class BasicMoveAuton extends OpMode{
     /** This method is called once at the init of the OpMode. **/
     @Override
     public void init() {
-        shooter.speed = 1600;
-        setPathState(PathState.FIRST);
+        shooter.speed = 1700;
+        setPathState(PathState.ONE);
         intake.init(hardwareMap);
         shooter.init(hardwareMap);
         vision.init(hardwareMap);
@@ -387,7 +424,7 @@ public class BasicMoveAuton extends OpMode{
     public void start() {
 //        opmodeTimer.resetTimer();
         pathTimer.reset();
-        setPathState(PathState.FIRST);
+        setPathState(PathState.ONE);
     }
 
     /** We do not use this because everything should automatically disable **/

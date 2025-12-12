@@ -79,13 +79,14 @@ public class RED extends OpMode {
         follower.update();
 //
         if(gamepad1.left_bumper) {
-            spinshooter = true;
+//            spinshooter = true;
 //
 //            intake.turretSpinIntake = true;
 //            intake.hardStopActivated = true;
 //
 ////            shoot.flyWheelActivated = !shoot.flyWheelActivated;
-            if (Math.abs(shoot.flyWheelMotor1.getVelocity() - shoot.speed) < 25) {
+            if (shoot.flyWheelMotor1.getVelocity() - shoot.speed > -50 && shoot.flyWheelMotor1.getVelocity() - shoot.speed < 100) {
+                intake.speed = 1;
                 intake.turretSpinIntake = true;
                 intake.hardStopActivated = true;
 
@@ -96,7 +97,7 @@ public class RED extends OpMode {
         } else {
             intake.turretSpinIntake = false;
             intake.hardStopActivated = false;
-            spinshooter = false;
+//            spinshooter = false;
         }
 
 
@@ -111,7 +112,7 @@ public class RED extends OpMode {
 //            intake.hardStopActivated = false;
 //        }
 
-        if(gamepad1.dpadDownWasPressed()){
+        if(gamepad1.bWasPressed()){
             spinshooter = !spinshooter;
         }
 
@@ -120,6 +121,7 @@ public class RED extends OpMode {
         } else {
             shoot.spinShooter = false;
         }
+
         if(gamepad1.rightBumperWasPressed()){
             intake.speed = .7;
             intake.spinIntake = !intake.spinIntake;

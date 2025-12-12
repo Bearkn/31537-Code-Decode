@@ -38,7 +38,7 @@ public class REDAUTON12BALL extends OpMode{
 
 
 
-    private final Pose startPose = new Pose(111, 132.5, Math.toRadians(90)); // Start Pose of our robot.
+    private final Pose startPose = new Pose(39, 60.5, Math.toRadians(90)); // Start Pose of our robot.
 
 
     public enum PathState {
@@ -65,7 +65,7 @@ public class REDAUTON12BALL extends OpMode{
         path1 = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(111.000, 132.500), new Pose(92.000, 87.000))
+                        new BezierLine(new Pose(39, 60.5), new Pose(20, 15))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(53))
                 .build();
@@ -73,7 +73,7 @@ public class REDAUTON12BALL extends OpMode{
         path2 = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(92.000, 87.000), new Pose(126.000, 84.000))
+                        new BezierLine(new Pose(20, 15), new Pose(60, 12))
                 )
                 .setTangentHeadingInterpolation()
                 .build();
@@ -81,7 +81,7 @@ public class REDAUTON12BALL extends OpMode{
         path3 = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(126.000, 84.000), new Pose(128.000, 70.000))
+                        new BezierLine(new Pose(54, 12), new Pose(56, 4))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(90))
                 .build();
@@ -89,7 +89,7 @@ public class REDAUTON12BALL extends OpMode{
         path4 = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(128.000, 70.000), new Pose(92.000, 87.000))
+                        new BezierLine(new Pose(56, 4), new Pose(20, 15))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(53))
                 .build();
@@ -98,9 +98,9 @@ public class REDAUTON12BALL extends OpMode{
                 .pathBuilder()
                 .addPath(
                         new BezierCurve(
-                                new Pose(92.000, 87.000),
-                                new Pose(82.000, 55.000),
-                                new Pose(132.000, 58.000)
+                                new Pose(20, 15),
+                                new Pose(10, -17),
+                                new Pose(64, -14)
                         )
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(53), Math.toRadians(0))
@@ -110,9 +110,9 @@ public class REDAUTON12BALL extends OpMode{
                 .pathBuilder()
                 .addPath(
                         new BezierCurve(
-                                new Pose(132.000, 58.000),
-                                new Pose(93.000, 67.000),
-                                new Pose(92.000, 87.000)
+                                new Pose(58, -14),
+                                new Pose(21, -5),
+                                new Pose(20, 15)
                         )
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(53))
@@ -122,9 +122,9 @@ public class REDAUTON12BALL extends OpMode{
                 .pathBuilder()
                 .addPath(
                         new BezierCurve(
-                                new Pose(92.000, 87.000),
-                                new Pose(75.000, 21.000),
-                                new Pose(132.000, 36.000)
+                                new Pose(20, 15),
+                                new Pose(3, -51),
+                                new Pose(64, -36)
                         )
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(53), Math.toRadians(0))
@@ -133,7 +133,7 @@ public class REDAUTON12BALL extends OpMode{
         path8 = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(132.000, 36.000), new Pose(92.000, 87.000))
+                        new BezierLine(new Pose(58, -36.000), new Pose(20, 15))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(53))
                 .build();
@@ -141,7 +141,7 @@ public class REDAUTON12BALL extends OpMode{
         path9 = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(92.000, 87.000), new Pose(118.000, 72.000))
+                        new BezierLine(new Pose(20, 15), new Pose(40, 0))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(53), Math.toRadians(0))
                 .build();
@@ -164,7 +164,7 @@ public class REDAUTON12BALL extends OpMode{
 
 
             case TWO:
-                if (pathTimer.seconds() < 5 && pathTimer.seconds() > 2.5) {
+                if (pathTimer.seconds() < 4 && pathTimer.seconds() > 1.5) {
 
                     shootBall = true;
                 } else if (pathTimer.seconds() >= 5) {
@@ -185,7 +185,7 @@ public class REDAUTON12BALL extends OpMode{
                 }
                 break;
             case FOUR:
-                if(follower.getPose().getX() > 120){
+                if(follower.getPose().getX() > 54){
                     follower.followPath(path3,.7,true);
                     setPathState(PathState.FIVE);
                 }
@@ -202,7 +202,7 @@ public class REDAUTON12BALL extends OpMode{
                 }
                 break;
             case SEVEN:
-                if (pathTimer.seconds() < 5 && pathTimer.seconds() > 2.5) {
+                if (pathTimer.seconds() < 4 && pathTimer.seconds() > 2.5) {
 
                     shootBall = true;
                 } else if (pathTimer.seconds() >= 5) {
@@ -220,14 +220,14 @@ public class REDAUTON12BALL extends OpMode{
                 }
                 break;
             case NINE:
-                if (follower.getPose().getX() > 126) {
+                if (follower.getPose().getX() > 58) {
                     follower.followPath(path6,true);
                     setPathState(PathState.TEN);
                     shooter.spinShooter = true;
                 }
                 break;
             case TEN:
-                if (pathTimer.seconds() < 5 && pathTimer.seconds() > 2.5) {
+                if (pathTimer.seconds() < 4 && pathTimer.seconds() > 2.5) {
 
                     shootBall = true;
                 } else if (pathTimer.seconds() >= 5) {
@@ -239,19 +239,20 @@ public class REDAUTON12BALL extends OpMode{
             case ELEVEN:
                 intake.speed = .8;
                 intake.spinIntake = true;
+                shooter.spinShooter = true;
                 if (!follower.isBusy()) {
                     follower.followPath(path7,true);
                     setPathState(PathState.TWELVE);
                 }
                 break;
             case TWELVE:
-                if (follower.getPose().getX() > 126) {
+                if (follower.getPose().getX() > 58) {
                     follower.followPath(path8,true);
                     setPathState(PathState.THIRTEEN);
                 }
                 break;
             case THIRTEEN:
-                if (pathTimer.seconds() < 5 && pathTimer.seconds() > 2.5) {
+                if (pathTimer.seconds() < 4 && pathTimer.seconds() > 2.5) {
 
                     shootBall = true;
                 } else if (pathTimer.seconds() >= 5) {
@@ -262,7 +263,7 @@ public class REDAUTON12BALL extends OpMode{
                 break;
             case FOURTEEN:
                 if (!follower.isBusy()) {
-                    follower.followPath(path9);
+                    follower.followPath(path9,true);
                 }
                 break;
         }
@@ -358,9 +359,10 @@ public class REDAUTON12BALL extends OpMode{
         }
         if(shootBall) {
 
-            if (Math.abs(shooter.flyWheelMotor1.getVelocity() - shooter.speed) < 30) {
+            if (shooter.flyWheelMotor1.getVelocity() - shooter.speed > -25 && shooter.flyWheelMotor1.getVelocity() - shooter.speed < 75) {
                 intake.turretSpinIntake = true;
                 activateHardstop = true;
+                intake.speed = 1;
 
             } else {
 //                intake.turretSpinIntake = false;
@@ -388,7 +390,7 @@ public class REDAUTON12BALL extends OpMode{
             telemetry.addData("tx", vision.llResult.getTx());
             telemetry.addData("ty", vision.llResult.getTy());
             telemetry.addData("ta", vision.llResult.getTa());
-            shooter.speedCalc(vision.llResult.getTy());
+//            shooter.speedCalc(vision.llResult.getTy());
 
             telemetry.update();
 
@@ -398,8 +400,8 @@ public class REDAUTON12BALL extends OpMode{
     /** This method is called once at the init of the OpMode. **/
     @Override
     public void init() {
-        shooter.speed = 1650;
-        setPathState(PathState.FIRST);
+        shooter.speed = 1700;
+        setPathState(PathState.ONE);
         intake.init(hardwareMap);
         shooter.init(hardwareMap);
         vision.init(hardwareMap);
@@ -422,7 +424,7 @@ public class REDAUTON12BALL extends OpMode{
     public void start() {
 //        opmodeTimer.resetTimer();
         pathTimer.reset();
-        setPathState(PathState.FIRST);
+        setPathState(PathState.ONE);
     }
 
     /** We do not use this because everything should automatically disable **/

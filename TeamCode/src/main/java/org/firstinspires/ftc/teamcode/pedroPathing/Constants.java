@@ -64,7 +64,7 @@ public class Constants {
 //            .drivePIDFSwitch(15)
 //            .centripetalScaling(0.0005);
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, .7, .5);
+    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, .7, 1);
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
             .rightFrontMotorName("frm")
