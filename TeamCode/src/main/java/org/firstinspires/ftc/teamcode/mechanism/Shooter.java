@@ -64,7 +64,7 @@ public class Shooter {
     public void spin() {
         if (spinShooter) {
             flyWheelMotor1.setVelocity(speed);
-            flyWheelMotor2.setVelocity(-speed);
+            flyWheelMotor2.setVelocity(speed);
         } else {
             flyWheelMotor1.setPower(0);
             flyWheelMotor2.setPower(0);
