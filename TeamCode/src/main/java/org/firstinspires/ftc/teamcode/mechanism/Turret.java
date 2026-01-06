@@ -15,10 +15,11 @@ public class Turret {
 
     //turret variables
 
-    private double maxAngle = 180.0f;
+    private double maxAngle = 150.1;
 
     public double turretAngle = 0.0f;
 
+    public boolean shooterActivated = true;
 
     public void init(HardwareMap hwMap){
         turretServoBack = hwMap.get(Servo.class,"btservo");
@@ -38,8 +39,9 @@ public class Turret {
 
 
     public void update(){
-        turretServoFront.setPosition(setAngleToTurret());
-        turretServoBack.setPosition(setAngleToTurret());
-
+        if(shooterActivated) {
+            turretServoFront.setPosition(setAngleToTurret());
+            turretServoBack.setPosition(setAngleToTurret());
+        }
     }
 }
