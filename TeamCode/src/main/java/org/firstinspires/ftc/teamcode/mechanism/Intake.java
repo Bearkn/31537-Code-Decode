@@ -11,75 +11,87 @@ import org.firstinspires.ftc.teamcode.Algs.PIDF;
 public class Intake {
 
     //Intake obj
-    public static DcMotorEx intakef;
-    public static DcMotorEx index;
+    public DcMotorEx intakef;
+    public DcMotorEx index;
 
-    public static Servo stop;
+    public Servo stop;
 
     //Intake Variables
-    public static boolean IntakeActivated = true;
+    public boolean IntakeActivated = true;
 
-    public static boolean teleOpIntake = true;
+    public boolean teleOpIntake = true;
 
-    public static boolean intakeOn = false;
+    public boolean intakeOn = false;
 
-    public static boolean stopOn = false;
+    public boolean stopOn = true;
 
-    public static boolean Outtake = false;
+    public boolean Outtake = false;
 
 
-    public static enum StopState {
+    public enum StopState {
         SHOOT,
         HOLD
     }
-    public static StopState stopState;
+    public StopState stopState;
 
-    public static enum IntakeState {
+    public enum IntakeState {
         INTAKE,
         STOP,
         OUTTAKE
     }
-    public static IntakeState intakeState;
+    public IntakeState intakeState;
 
-    public static enum IndexState {
+    public enum IndexState {
         INTAKE,
         STOP,
         OUTTAKE
     }
-    public static IndexState indexState;
+    public IndexState indexState;
 
 
 
-    public static double intakeSpeed;
-    public static double indexSpeed;
+    public double targetIntakeSpeed;
+    public double currentIntakeSpeed;
 
-    public static void init(HardwareMap hwMap){
+    public double Kp=.0005,Ki = 0,Kd = 0,Kf=2.8;
+    public double power;
+
+
+    public double indexSpeed;
+
+    public void init(HardwareMap hwMap){
         intakef = hwMap.get(DcMotorEx.class, "intakef");
         index = hwMap.get(DcMotorEx.class, "index");
         stop = hwMap.get(Servo.class,"stop");
-        intakef.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakef.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         index.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakef.setDirection(DcMotorSimple.Direction.REVERSE);
         index.setDirection(DcMotorSimple.Direction.REVERSE);
         intakef.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         index.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         stopState = StopState.HOLD;
+
     }
 
-    public static void update(){
+    public void update(){
         if(IntakeActivated) {
             StopUpdate();
+            IntakeUpdate();
+            IndexUpdate();
             if (teleOpIntake) {
-                intakef.setPower(intakeSpeed);
-                index.setVelocity(indexSpeed);
+                PIDF intakePID = new PIDF(Kp, Ki, Kd, Kf);
+                currentIntakeSpeed = intakef.getVelocity();
+                power = intakePID.calculate(targetIntakeSpeed, currentIntakeSpeed);
+                intakef.setPower(power);
+                index.setPower(indexSpeed);
             }
         }
     }
 
-    public static void StopUpdate() {
+    public void StopUpdate() {
         switch (stopState) {
             case SHOOT:
-                stop.setPosition(.0);
+                stop.setPosition(.1);
                 break;
             case HOLD:
                 stop.setPosition(.5);
@@ -87,24 +99,24 @@ public class Intake {
         }
     }
 
-    public static void IntakeUpdate() {
+    public void IntakeUpdate() {
         switch (intakeState) {
             case INTAKE:
-                intakeSpeed = .5;
+                targetIntakeSpeed = 1;
                 break;
             case STOP:
-                intakeSpeed = 0;
+                targetIntakeSpeed = 0;
                 break;
             case OUTTAKE:
-                intakeSpeed = -.5;
+                targetIntakeSpeed = -.5;
                 break;
         }
     }
 
-    public static void IndexUpdate() {
+    public void IndexUpdate() {
         switch (indexState) {
             case INTAKE:
-                indexSpeed = .5;
+                indexSpeed = 1;
                 break;
             case STOP:
                 indexSpeed = .0;
