@@ -156,12 +156,12 @@ public class red extends OpMode {
         if(gamepad1.dpadUpWasPressed()){
             shooter.hoodAngle -= .01;
         }
-//
+
         if(gamepad1.dpadLeftWasPressed()){
-            shooter.targetFlywheelSpeed += 10;
+            turret.TURRET_FF_GAIN += .01;
         }
         if(gamepad1.dpadRightWasPressed()){
-            shooter.targetFlywheelSpeed -= 10;
+            turret.TURRET_FF_GAIN -= .01;
         }
 
 
@@ -171,6 +171,7 @@ public class red extends OpMode {
         shooter.update(Shooter.distance2D(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()), turret.redGoalX,turret.redGoalY),shooter.currentFlywheelSpeed);
         intake.update();
         follower.update();
+        turret.FFturret(follower.getHeading());
 
 //        if(vision.llResult != null && vision.llResult.isValid()) {
 ////            Pose3D botPoseMt2 = llResult.getBotpose_MT2();
@@ -179,11 +180,14 @@ public class red extends OpMode {
 //            telemetry.addData("ta", vision.llResult.getTa());
 //            shoot.speedCalc(vision.llResult.getTy());
 //
+
 //        }
 
         telemetry.addData("robotX velo", follower.getVelocity().getXComponent());
         telemetry.addData("robotY velo", follower.getVelocity().getYComponent());
-        telemetry.addData("robot turn speed", );
+        telemetry.addData("robot turn speed", turret.AngularVelocity(follower.getHeading()));
+        telemetry.addData("FF", turret.turretFeedForwardServo);
+        telemetry.addData("FF tuning", turret.TURRET_FF_GAIN);
 
 
 

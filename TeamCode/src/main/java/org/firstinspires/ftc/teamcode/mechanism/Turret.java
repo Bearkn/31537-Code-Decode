@@ -1,20 +1,13 @@
 package org.firstinspires.ftc.teamcode.mechanism;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import com.pedropathing.math.MathFunctions;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoControllerEx;
 //import com.seattlesolvers.solverslib.hardware.AbsoluteAnalogEncoder;
-import com.seattlesolvers.solverslib.hardware.motors.CRServoEx;
-import com.seattlesolvers.solverslib.hardware.motors.CRServoGroup;
-import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Algs.PIDF;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
 public class Turret {
@@ -33,6 +26,7 @@ public class Turret {
 
 
     public boolean isRed = true;
+    private double lastAngularHeading = 0.0;
 
     // Servos
 //    public CRServoGroup turretServos;
@@ -40,6 +34,7 @@ public class Turret {
     public Servo turretServoBack;
 
     public AnalogInput turretAnalog;
+    private ElapsedTime angularVelocityTime = new ElapsedTime();
 
 
 //    public AbsoluteAnalogEncoder turretEncoder;
@@ -60,6 +55,11 @@ public class Turret {
     public double fieldAngle;
 
     public double ballFlightTime;
+
+    public ElapsedTime angularVeloTime = new ElapsedTime();
+
+    private double Oldtime = 0;
+
 
     public void init(HardwareMap hwMap) {
 //        turretServos = new CRServoGroup(
@@ -92,6 +92,10 @@ public class Turret {
     private double lastAngle1 = 0, totalAngle1 = 0;
     private double lastAngle2 = 0, totalAngle2 = 0;
 
+    // FF
+    public  double TURRET_FF_GAIN = .1; // start at 1.0
+
+    public double turretFeedForwardServo = 0;
 
 
 
@@ -180,6 +184,26 @@ public class Turret {
         return new double[]{compensatedGoalX, compensatedGoalY};
     }
 
+    public double AngularVelocity(double robotHeading) {
+        double currentHeading = AngleUnit.RADIANS.toDegrees(robotHeading);
+        double deltaTime = angularVeloTime.seconds();
+
+        double deltaHeading = AngleUnit.normalizeDegrees(currentHeading - lastAngularHeading);
+
+
+        lastAngularHeading = currentHeading;
+        angularVeloTime.reset();
+
+
+        return deltaHeading/deltaTime;
+    }
+
+    public void FFturret(double robotHeading){
+        double omega = AngularVelocity(robotHeading);
+        turretFeedForwardServo =  (-omega * TURRET_FF_GAIN) / 360.0;
+    }
+
+
 
 
     public void update(
@@ -199,8 +223,8 @@ public class Turret {
 //                isRed
 //        );
 
-        turretAngle = calculateTurretAngle(robotX, robotY, robotHeading, goalX, goalY);
-
+        turretAngle = calculateTurretAngle(robotX, robotY, robotHeading, goalX, goalY) + turretFeedForwardServo;
+//        FFturret(robotHeading);
         turretAngle = MathFunctions.clamp(turretAngle,.025,.975);
 
 
