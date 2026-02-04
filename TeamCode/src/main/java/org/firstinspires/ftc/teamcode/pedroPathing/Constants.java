@@ -20,14 +20,14 @@ public class Constants {
 
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(11.3398d)
-            .forwardZeroPowerAcceleration(-38.407322d)
-            .lateralZeroPowerAcceleration(-69.2d);
-//            .translationalPIDFCoefficients(new PIDFCoefficients(
-//                    0.05,
-//                    0,
-//                    0.05,
-//                    0.015
-//            ));
+            .forwardZeroPowerAcceleration(-31.55026d)
+            .lateralZeroPowerAcceleration(-83.864d)
+            .translationalPIDFCoefficients(new PIDFCoefficients(
+                    0.1,
+                    0,
+                    0.01,
+                    0.03
+            ))
 //            .translationalPIDFSwitch(4)
 //            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(
 //                    0.4,
@@ -35,12 +35,12 @@ public class Constants {
 //                    0.005,
 //                    0.0006
 //            ))
-//            .headingPIDFCoefficients(new PIDFCoefficients(
-//                    0.8,
-//                    0,
-//                    0,
-//                    0.01
-//            ))
+            .headingPIDFCoefficients(new PIDFCoefficients(
+                    1,
+                    0,
+                    0.03,
+                    0.03
+            ))
 //            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(
 //                    2.5,
 //                    0,
@@ -62,9 +62,10 @@ public class Constants {
 //                    0.01
 //            ))
 //            .drivePIDFSwitch(15)
-//            .centripetalScaling(0.0005);
+            .centripetalScaling(0.0005);
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, .7, 1);
+    public static PathConstraints pathConstraints = new PathConstraints(0.96, 100, .7, 1);
+
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
             .rightFrontMotorName("frm")
@@ -75,8 +76,8 @@ public class Constants {
             .leftRearMotorDirection(DcMotor.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotor.Direction.FORWARD)
             .rightRearMotorDirection(DcMotor.Direction.FORWARD)
-            .xVelocity(77.130985)
-            .yVelocity(58.49);
+            .xVelocity(74.652)
+            .yVelocity(61.533);
 
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
@@ -87,7 +88,6 @@ public class Constants {
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
-
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)

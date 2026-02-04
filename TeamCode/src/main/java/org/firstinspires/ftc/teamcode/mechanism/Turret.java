@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.mechanism;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
+import com.pedropathing.math.MathFunctions;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoControllerEx;
@@ -23,10 +25,21 @@ public class Turret {
     public double redGoalX  = 66;
     public double redGoalY  = 66;
 
+//    // Goals
+//    public double SblueGoalX = -66;
+//    public double SblueGoalY = 66;
+//    public double SredGoalX  = 66;
+//    public double SredGoalY  = 66;
+
+
+    public boolean isRed = true;
+
     // Servos
 //    public CRServoGroup turretServos;
     public Servo turretServoFront;
     public Servo turretServoBack;
+
+    public AnalogInput turretAnalog;
 
 
 //    public AbsoluteAnalogEncoder turretEncoder;
@@ -37,10 +50,16 @@ public class Turret {
     // Turret limits
     private static final double MAX_ANGLE = 150.0;
 
+    public double turretpos = .5;
+
     public double turretAngle = 0.0;
+
+    public double analogangle = 0;
     public boolean shooterActivated = true;
 
     public double fieldAngle;
+
+    public double ballFlightTime;
 
     public void init(HardwareMap hwMap) {
 //        turretServos = new CRServoGroup(
@@ -55,6 +74,8 @@ public class Turret {
 //                .setReversed(true);
         turretServoFront = hwMap.get(Servo.class,"ftservo");
         turretServoBack = hwMap.get(Servo.class,"btservo");
+        turretAnalog = hwMap.get(AnalogInput.class,"turret");
+
 
 
     }
@@ -73,17 +94,10 @@ public class Turret {
 
 
 
-    PIDF turretpidf = new PIDF(
-            0.003,  // kP
-            0.0,    // kI
-            0.0002, // kD
-            0.0     // kF (usually 0 for CR)
-    );
-
 
     private double angleToServo(double angle360) {
         // Map 0–360° → 0–1
-        return angle360 / 360.0;
+        return angle360 / 360;
     }
 
     private double calculateTurretAngle(
@@ -99,11 +113,17 @@ public class Turret {
         // Field angle to target
         fieldAngle = Math.toDegrees(Math.atan2(dy, dx));
 
-        double angle = fieldAngle - robotHeading;
+        double angle = fieldAngle - robotHeading; //210
 
-        if (angle < 0) angle += 360;                        // [0,360)
+        if (angle < 0) angle += 360;
+        if (angle > 360) angle -= 360;                        // [0,360)
+// [0,360)
 
         return angleToServo(angle);
+    }
+
+    public void calcflightTime(double distance){
+        ballFlightTime = distance * .01;        // need to figure out regression line
     }
 
     private double getRawAngle(AnalogInput analog) {
@@ -118,7 +138,7 @@ public class Turret {
 
 
     private double clampTurretTarget(double target) {
-        return Math.max(0.125, Math.min(.875, target));
+        return Math.max(0.025, Math.min(.975, target));
     }
 
     public double turretpositionX(double robotX, double robotY, double robotHeading) {
@@ -131,6 +151,35 @@ public class Turret {
         return robotY - offset * Math.sin(robotHeading);
     }
 
+    public double[] shootOnTheMove(
+            double turretX,
+            double turretY,
+            double robotVectorX,
+            double robotVectorY,
+            boolean isRed
+    ) {
+        // Select correct goal
+        double goalX = isRed ? redGoalX : blueGoalX;
+        double goalY = isRed ? redGoalY : blueGoalY;
+
+        // Distance from turret to goal
+        double dx = goalX - turretX;
+        double dy = goalY - turretY;
+        double distance = Math.hypot(dx, dy);
+
+        // Time of flight approximation
+        double time = distance / ballFlightTime;
+
+        // Lead compensation (move goal opposite robot motion)
+        double leadX = robotVectorX * time;
+        double leadY = robotVectorY * time;
+
+        double compensatedGoalX = goalX - leadX;
+        double compensatedGoalY = goalY - leadY;
+
+        return new double[]{compensatedGoalX, compensatedGoalY};
+    }
+
 
 
     public void update(
@@ -138,15 +187,41 @@ public class Turret {
             double robotY,
             double robotHeading,
             double goalX,
-            double goalY
+            double goalY,
+            double robotVectX,
+            double robotVectY
     ) {
+//        double[] goal = shootOnTheMove(
+//                turretpositionX(robotX, robotY, robotHeading),
+//                turretpositionY(robotX, robotY, robotHeading),
+//                robotVectX,
+//                robotVectY,
+//                isRed
+//        );
+
         turretAngle = calculateTurretAngle(robotX, robotY, robotHeading, goalX, goalY);
+
+        turretAngle = MathFunctions.clamp(turretAngle,.025,.975);
+
+
+        analogangle = (((turretAnalog.getVoltage() / 3.3)* 450)-45);
+
+//        analogangle = MathFunctions.clamp(analogangle,.25,.75);
+
+
 
 
         if (shooterActivated) {
+
             turretServoFront.setPosition(clampTurretTarget(turretAngle));
             turretServoBack.setPosition(clampTurretTarget(turretAngle));
+//
+//            turretServoFront.setPosition(.5);
+//            turretServoBack.setPosition(.5);
 //            turretServos.set(.1);
+        } else {
+            turretServoFront.setPosition(.5);
+            turretServoBack.setPosition(.5);
         }
     }
 }

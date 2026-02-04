@@ -12,7 +12,7 @@ public class Intake {
 
     //Intake obj
     public DcMotorEx intakef;
-    public DcMotorEx index;
+    public DcMotorEx intakeR;
 
     public Servo stop;
 
@@ -37,7 +37,8 @@ public class Intake {
     public enum IntakeState {
         INTAKE,
         STOP,
-        OUTTAKE
+        OUTTAKE,
+        SHOOT
     }
     public IntakeState intakeState;
 
@@ -53,7 +54,7 @@ public class Intake {
     public double targetIntakeSpeed;
     public double currentIntakeSpeed;
 
-    public double Kp=.0005,Ki = 0,Kd = 0,Kf=2.8;
+//    public double Kp=.0005,Ki = 0,Kd = 0,Kf=2.8;
     public double power;
 
 
@@ -61,14 +62,13 @@ public class Intake {
 
     public void init(HardwareMap hwMap){
         intakef = hwMap.get(DcMotorEx.class, "intakef");
-        index = hwMap.get(DcMotorEx.class, "index");
+        intakeR = hwMap.get(DcMotorEx.class, "index");
         stop = hwMap.get(Servo.class,"stop");
         intakef.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        index.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakef.setDirection(DcMotorSimple.Direction.REVERSE);
-        index.setDirection(DcMotorSimple.Direction.REVERSE);
         intakef.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        index.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        intakeR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         stopState = StopState.HOLD;
 
     }
@@ -77,13 +77,12 @@ public class Intake {
         if(IntakeActivated) {
             StopUpdate();
             IntakeUpdate();
-            IndexUpdate();
             if (teleOpIntake) {
-                PIDF intakePID = new PIDF(Kp, Ki, Kd, Kf);
-                currentIntakeSpeed = intakef.getVelocity();
-                power = intakePID.calculate(targetIntakeSpeed, currentIntakeSpeed);
-                intakef.setPower(power);
-                index.setPower(indexSpeed);
+//                PIDF intakePID = new PIDF(Kp, Ki, Kd, Kf);
+//                currentIntakeSpeed = intakef.getVelocity();
+//                power = intakePID.calculate(targetIntakeSpeed, currentIntakeSpeed);
+                intakef.setPower(targetIntakeSpeed);
+                intakeR.setPower(targetIntakeSpeed);
             }
         }
     }
@@ -91,10 +90,10 @@ public class Intake {
     public void StopUpdate() {
         switch (stopState) {
             case SHOOT:
-                stop.setPosition(.1);
+                stop.setPosition(.0);
                 break;
             case HOLD:
-                stop.setPosition(.5);
+                stop.setPosition(.25);
                 break;
         }
     }
@@ -110,20 +109,10 @@ public class Intake {
             case OUTTAKE:
                 targetIntakeSpeed = -.5;
                 break;
+            case SHOOT:
+                targetIntakeSpeed = .5;
         }
     }
 
-    public void IndexUpdate() {
-        switch (indexState) {
-            case INTAKE:
-                indexSpeed = 1;
-                break;
-            case STOP:
-                indexSpeed = .0;
-                break;
-            case OUTTAKE:
-                indexSpeed = -.5;
-                break;
-        }
-    }
+
 }

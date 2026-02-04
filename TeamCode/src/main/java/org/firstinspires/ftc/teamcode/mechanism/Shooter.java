@@ -23,7 +23,7 @@ public class Shooter {
 
     //shooter variables
 
-    public double Kp=0.00075,Ki = 0,Kd = 0,Kf=0.00045;
+    public double Kp=0.0012 ,Ki = 0,Kd = 0,Kf=0.000415;
 
     public double targetFlywheelSpeed = 1600;
 
@@ -31,7 +31,7 @@ public class Shooter {
 
     public double power;
 
-    public double hoodAngle = .5;
+    public double hoodAngle = .75;
 
     public double [] stepsizes = {.1,.01,0.001,.0001,.00001};
 
@@ -58,8 +58,10 @@ public class Shooter {
     }
 
     public void UpdateHoodAngle() {
-        double clampedPosition = MathFunctions.clamp(hoodAngle, 0.3, 1.0);
+        double clampedPosition = MathFunctions.clamp(hoodAngle, 0.5, 1.0);
         hood.setPosition(clampedPosition);
+//        hood.setPosition(.85);
+
     }
 
     public void updateFLywheelSpeed(double distance){
@@ -75,7 +77,8 @@ public class Shooter {
 
 
 
-        targetFlywheelSpeed =  MathFunctions.clamp(flyspeed,minFlywheelSpeed,maxFlywheelSpeed);
+//        targetFlywheelSpeed =  MathFunctions.clamp(flyspeed,minFlywheelSpeed,maxFlywheelSpeed);
+//        targetFlywheelSpeed = 1710;
 
     }
 
@@ -87,7 +90,8 @@ public class Shooter {
                 - 0.0000156994384 * currentFlySpeed * currentFlySpeed
                 + 0.0000000027145231 * currentFlySpeed * currentFlySpeed * currentFlySpeed;
 
-        hoodAngle =  MathFunctions.clamp(hoodangle,.3,1.0);
+//        hoodAngle =  MathFunctions.clamp(hoodangle,.3,1.0);
+//        hoodAngle = .5;
     }
 
     public static double distance2D(double x1, double y1, double x2, double y2) {
@@ -128,16 +132,18 @@ public class Shooter {
 
         PIDF shooterPID = new PIDF(Kp, Ki, Kd, Kf);
 //        updateHoodAngle(distance,currentfly);
-        hoodAngle =  MathFunctions.clamp(hoodcontrol(distance),.3,1.0);
+//        hoodAngle =  MathFunctions.clamp(hoodcontrol(distance),.5,1.0);
         updateFLywheelSpeed(distance);
         UpdateHoodAngle();
         currentFlywheelSpeed = fly2.getVelocity();
         power = shooterPID.calculate(targetFlywheelSpeed, currentFlywheelSpeed);
-
+        power = MathFunctions.clamp(power, -.2,1);
         if(shooterActivated) {
+//            targetFlywheelSpeed = 1600;
             fly1.setPower(power);
             fly2.setPower(power);
         } else {
+//            targetFlywheelSpeed = 2000;
             fly1.setPower(0);
             fly2.setPower(0);
         }
