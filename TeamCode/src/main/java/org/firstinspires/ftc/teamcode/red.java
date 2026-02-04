@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.MathFunctions;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -14,7 +15,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @TeleOp
 public class red extends OpMode {
     private Follower follower;
-    private final Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
+    private final Pose startPose = new Pose(0, -48, Math.toRadians(0)); // Start Pose of our robot.
     MecanumDrive drive = new MecanumDrive();
     Turret turret = new Turret();
 
@@ -89,9 +90,9 @@ public class red extends OpMode {
                 intake.indexState = Intake.IndexState.INTAKE;
                 intake.intakeState = Intake.IntakeState.SHOOT;
             }
-//            if(shooter.currentFlywheelSpeed >= (shooter.targetFlywheelSpeed-200)) {
+            if(shooter.currentFlywheelSpeed >= Math.abs((shooter.targetFlywheelSpeed-20))) {
                 intake.stopState = Intake.StopState.SHOOT;
-//            }
+            }
         } else {
                 intake.stopState = Intake.StopState.HOLD;
         }
@@ -158,16 +159,16 @@ public class red extends OpMode {
         }
 
         if(gamepad1.dpadLeftWasPressed()){
-            turret.TURRET_FF_GAIN += .01;
+            shooter.targetFlywheelSpeed += 10;
         }
         if(gamepad1.dpadRightWasPressed()){
-            turret.TURRET_FF_GAIN -= .01;
+            shooter.targetFlywheelSpeed -=10;
         }
 
 
 //        turret.turretAngle = drive.imu.getHeading(AngleUnit.DEGREES);
 
-        turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.redGoalX,turret.redGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent());
+        turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.redGoalX,turret.redGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent(),true);
         shooter.update(Shooter.distance2D(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()), turret.redGoalX,turret.redGoalY),shooter.currentFlywheelSpeed);
         intake.update();
         follower.update();
@@ -223,8 +224,8 @@ public class red extends OpMode {
         telemetry.addData("turret angle", turret.turretAngle);
         telemetry.addData("field angle", turret.fieldAngle);
         telemetry.addData("distance", Shooter.distance2D(follower.getPose().getX(), follower.getPose().getY(), turret.redGoalX,turret.redGoalY));
-        telemetry.addData("blue Goal X", turret.blueGoalX);
-        telemetry.addData("blue goal Y", turret.blueGoalY);
+        telemetry.addData("red Goal X", turret.goal[0]);
+        telemetry.addData("red goal Y", turret.goal[1]);
 
         telemetry.addData("analog", turret.analogangle);
         telemetry.addData("pos", turret.turretpos);
