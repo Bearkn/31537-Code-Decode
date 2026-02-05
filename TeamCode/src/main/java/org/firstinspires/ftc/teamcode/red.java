@@ -5,23 +5,30 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.MathFunctions;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ReadWriteFile;
 
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.Algs.FileManager;
 import org.firstinspires.ftc.teamcode.mechanism.Intake;
 import org.firstinspires.ftc.teamcode.mechanism.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanism.Shooter;
 import org.firstinspires.ftc.teamcode.mechanism.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
+import java.io.File;
+
 @TeleOp
 public class red extends OpMode {
     private Follower follower;
-    private final Pose startPose = new Pose(0, -48, Math.toRadians(0)); // Start Pose of our robot.
+    private Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
     MecanumDrive drive = new MecanumDrive();
     Turret turret = new Turret();
 
     Shooter shooter = new Shooter();
 
     Intake intake = new Intake();
+
+    FileManager fileManager = new FileManager();
 
 
     // control booleans
@@ -39,6 +46,14 @@ public class red extends OpMode {
         intake.init(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
+        fileManager.init();
+//        fileManager.FileWrite(follower.getPose().getX(),24,follower.getHeading());
+        fileManager.FileRead();
+        telemetry.addData("points",fileManager.routine);
+        Pose Autonpose = new Pose(fileManager.routine.get(0),fileManager.routine.get(1),fileManager.routine.get(2));
+        follower.setPose(Autonpose);
+
+
 
 
 
@@ -65,7 +80,9 @@ public class red extends OpMode {
             intake.intakeOn = !intake.intakeOn;
         }
 
-        gamepad1.a = intake.Outtake;
+        intake.Outtake = (gamepad1.left_trigger > .5);
+        intake.stopOn = !(gamepad1.right_trigger > .3);
+
 
 
         if(!intake.Outtake) {
@@ -90,16 +107,16 @@ public class red extends OpMode {
                 intake.indexState = Intake.IndexState.INTAKE;
                 intake.intakeState = Intake.IntakeState.SHOOT;
             }
-            if(shooter.currentFlywheelSpeed >= Math.abs((shooter.targetFlywheelSpeed-20))) {
+            if(shooter.currentFlywheelSpeed >= Math.abs(shooter.targetFlywheelSpeed-20) && Math.abs(turret.analogangle - (turret.turretAngle*360) ) < 5) {
                 intake.stopState = Intake.StopState.SHOOT;
             }
         } else {
                 intake.stopState = Intake.StopState.HOLD;
         }
 
-//        if(gamepad1.dpad_left){
-//            follower.setPose(new Pose (-63.306,-59.74,Math.toRadians(180)));
-//        }
+        if(gamepad1.dpad_left){
+            follower.setPose(new Pose (-63.306,-59.74,Math.toRadians(180)));
+        }
 
 //        63.306 0
 //
@@ -151,19 +168,19 @@ public class red extends OpMode {
 //            turret.blueGoalY -= .5;
 //        }
 
-        if(gamepad1.dpadDownWasPressed()){
-            shooter.hoodAngle +=.01;
-        }
-        if(gamepad1.dpadUpWasPressed()){
-            shooter.hoodAngle -= .01;
-        }
-
-        if(gamepad1.dpadLeftWasPressed()){
-            shooter.targetFlywheelSpeed += 10;
-        }
-        if(gamepad1.dpadRightWasPressed()){
-            shooter.targetFlywheelSpeed -=10;
-        }
+//        if(gamepad1.dpadDownWasPressed()){
+//            shooter.hoodAngle +=.01;
+//        }
+//        if(gamepad1.dpadUpWasPressed()){
+//            shooter.hoodAngle -= .01;
+//        }
+//
+//        if(gamepad1.dpadLeftWasPressed()){
+//            shooter.targetFlywheelSpeed += 10;
+//        }
+//        if(gamepad1.dpadRightWasPressed()){
+//            shooter.targetFlywheelSpeed -=10;
+//        }
 
 
 //        turret.turretAngle = drive.imu.getHeading(AngleUnit.DEGREES);
@@ -173,6 +190,7 @@ public class red extends OpMode {
         intake.update();
         follower.update();
         turret.FFturret(follower.getHeading());
+//        fileManager.FileWrite(follower.getPose().getX(),follower.getPose().getY(),follower.getHeading());
 
 //        if(vision.llResult != null && vision.llResult.isValid()) {
 ////            Pose3D botPoseMt2 = llResult.getBotpose_MT2();
@@ -189,6 +207,8 @@ public class red extends OpMode {
         telemetry.addData("robot turn speed", turret.AngularVelocity(follower.getHeading()));
         telemetry.addData("FF", turret.turretFeedForwardServo);
         telemetry.addData("FF tuning", turret.TURRET_FF_GAIN);
+
+        telemetry.addData("missangle",Math.abs(turret.analogangle - (turret.turretAngle*360) ));
 
 
 
@@ -231,6 +251,11 @@ public class red extends OpMode {
         telemetry.addData("pos", turret.turretpos);
 
         telemetry.addData("index speed", intake.intakeR.getVelocity());
+
+        telemetry.addData("outtake", intake.Outtake);
+
+
+
 
 
 

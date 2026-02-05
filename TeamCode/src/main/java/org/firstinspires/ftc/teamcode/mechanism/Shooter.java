@@ -64,22 +64,14 @@ public class Shooter {
 
     }
 
-    public void updateFLywheelSpeed(double distance){
+    public void updateFlywheelSpeed(double distance) {
+        double flyspeed = 0.00000770804 * Math.pow(distance, 4)
+                - 0.00385759 * Math.pow(distance, 3)
+                + 0.675656 * Math.pow(distance, 2)
+                - 39.70454 * distance
+                + 2329.88133;
 
-//        double flyspeed = 4.49843*(distance) +1290.12596;
-
-
-            double flyspeed =  (((0.00000777412 * distance
-                    - 0.00254502) * distance
-                    + 0.25954) * distance
-                    - 3.51534) * distance
-                    + 1333.01601;
-
-
-
-//        targetFlywheelSpeed =  MathFunctions.clamp(flyspeed,minFlywheelSpeed,maxFlywheelSpeed);
-//        targetFlywheelSpeed = 1710;
-
+        targetFlywheelSpeed = flyspeed;
     }
 
     public void updateHoodAngle(double distance, double currentFlySpeed){
@@ -101,30 +93,13 @@ public class Shooter {
     }
 
     public double hoodcontrol(double x) {
-        double[] xs = {
-                45, 50, 60, 70, 80, 93.3323,
-                100, 110, 120, 130, 140, 150, 160
-        };
+        // Using Horner's method for efficient polynomial evaluation
+        double result = (-4.20309e-8 * x + 0.0000164867) * x;
+        result = (result - 0.00235657) * x;
+        result = (result + 0.146512) * x;
+        result = result - 2.56355;
 
-        double[] ys = {
-                0.50, 0.57, 0.60, 0.73, 0.77, 0.73,
-                0.70, 0.68, 0.68, 0.68, 0.74, 0.74, 0.71
-        };
-
-        // Clamp if outside range
-        if (x <= xs[0]) return ys[0];
-        if (x >= xs[xs.length - 1]) return ys[ys.length - 1];
-
-        // Find interval and interpolate
-        for (int i = 0; i < xs.length - 1; i++) {
-            if (x >= xs[i] && x <= xs[i + 1]) {
-                double t = (x - xs[i]) / (xs[i + 1] - xs[i]);
-                return ys[i] + t * (ys[i + 1] - ys[i]);
-            }
-        }
-
-        // Should never reach here
-        return Double.NaN;
+        return result;
     }
 
 
@@ -132,8 +107,8 @@ public class Shooter {
 
         PIDF shooterPID = new PIDF(Kp, Ki, Kd, Kf);
 //        updateHoodAngle(distance,currentfly);
-//        hoodAngle =  MathFunctions.clamp(hoodcontrol(distance),.5,1.0);
-        updateFLywheelSpeed(distance);
+        hoodAngle = MathFunctions.clamp(hoodcontrol(distance), .5, 1.0);
+        updateFlywheelSpeed(distance);
         UpdateHoodAngle();
         currentFlywheelSpeed = fly2.getVelocity();
         power = shooterPID.calculate(targetFlywheelSpeed, currentFlywheelSpeed);

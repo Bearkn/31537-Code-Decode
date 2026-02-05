@@ -4,36 +4,35 @@ package org.firstinspires.ftc.teamcode.Autons;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.math.MathFunctions;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Algs.FileManager;
 import org.firstinspires.ftc.teamcode.mechanism.Intake;
 import org.firstinspires.ftc.teamcode.mechanism.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanism.Shooter;
 import org.firstinspires.ftc.teamcode.mechanism.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "RedSide", group = "Autons")
-
-public class AutonTest extends OpMode{
+@Autonomous
+public class Red12 extends OpMode{
     private Follower follower;
+    MecanumDrive drive = new MecanumDrive();
 
     Shooter shooter = new Shooter();
 
     Intake intake = new Intake();
 
-    MecanumDrive drive = new MecanumDrive();
     Turret turret = new Turret();
+
+    FileManager fileManager = new FileManager();
 
     private ElapsedTime pathTimer = new ElapsedTime();
 
 
-//    private int pathState = 0;
-
+    //state variables
 
 
     private final Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
@@ -120,7 +119,7 @@ public class AutonTest extends OpMode{
 
                 if (!follower.isBusy()) {
                     follower.followPath(path1);
-                    setPathState(PathState.SHOOT1);
+                    setPathState(PathState.SETUPGATE);
                 }
 
                 break;
@@ -131,6 +130,7 @@ public class AutonTest extends OpMode{
                 }
                 break;
             case SETUPGATE:
+                fileManager.FileWrite(follower.getPose().getX(),follower.getPose().getY(),follower.getHeading());
                 break;
         }
     }
@@ -143,19 +143,14 @@ public class AutonTest extends OpMode{
 
     @Override
     public void loop() {
-
-
-//
-//            intake.turretSpinIntake = true;
-//            intake.hardStopActivated = true;
-//
-////            shoot.flyWheelActivated = !shoot.flyWheelActivated;
-
-        // These loop the movements of the robot, these must be called continuously in order to work
+        drive.imu.update();
         follower.update();
         autonomousPathUpdate();
-//        intake.update();        // Feedback to Driver Hub for debugging
-//        shooter.update();
+        turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.redGoalX,turret.redGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent(),true);
+        shooter.update(Shooter.distance2D(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()), turret.redGoalX,turret.redGoalY),shooter.currentFlywheelSpeed);
+        intake.update();
+        follower.update();
+        turret.FFturret(follower.getHeading());
         telemetry.addData("path state", Pathstate.toString());
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
@@ -171,9 +166,11 @@ public class AutonTest extends OpMode{
     @Override
     public void init() {
         setPathState(PathState.FIRST);
+        drive.init(hardwareMap);
         intake.init(hardwareMap);
         shooter.init(hardwareMap);
         turret.init(hardwareMap);
+        fileManager.init();
         pathTimer = new ElapsedTime();
         pathTimer.reset();
 //        opmodeTimer = new Timer();
@@ -181,6 +178,12 @@ public class AutonTest extends OpMode{
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
+
+        //state variables
+        intake.Outtake = false;
+        intake.stopOn = f
+
+
     }
     /** This method is called continuously after Init while waiting for "play". **/
     @Override
@@ -197,4 +200,6 @@ public class AutonTest extends OpMode{
     /** We do not use this because everything should automatically disable **/
     @Override
     public void stop() {}
+
+
 }

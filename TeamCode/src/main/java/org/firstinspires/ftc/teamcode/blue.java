@@ -2,25 +2,33 @@ package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.MathFunctions;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ReadWriteFile;
 
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.Algs.FileManager;
 import org.firstinspires.ftc.teamcode.mechanism.Intake;
 import org.firstinspires.ftc.teamcode.mechanism.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanism.Shooter;
 import org.firstinspires.ftc.teamcode.mechanism.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
+import java.io.File;
+
 @TeleOp
 public class blue extends OpMode {
     private Follower follower;
-    private final Pose startPose = new Pose(15.3, -63, Math.toRadians(0)); // Start Pose of our robot.
+    private Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
     MecanumDrive drive = new MecanumDrive();
     Turret turret = new Turret();
 
     Shooter shooter = new Shooter();
 
     Intake intake = new Intake();
+
+    FileManager fileManager = new FileManager();
 
 
     // control booleans
@@ -38,6 +46,14 @@ public class blue extends OpMode {
         intake.init(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
+        fileManager.init();
+//        fileManager.FileWrite(follower.getPose().getX(),24,follower.getHeading());
+        fileManager.FileRead();
+        telemetry.addData("points",fileManager.routine);
+        Pose Autonpose = new Pose(fileManager.routine.get(0),fileManager.routine.get(1),fileManager.routine.get(2));
+        follower.setPose(Autonpose);
+
+
 
 
 
@@ -63,9 +79,9 @@ public class blue extends OpMode {
         if(gamepad1.rightBumperWasPressed()){
             intake.intakeOn = !intake.intakeOn;
         }
-        if(gamepad1.aWasPressed()){
-            intake.Outtake= !intake.Outtake;
-        }
+
+        intake.Outtake = (gamepad1.left_trigger > .5);
+        intake.stopOn = !(gamepad1.right_trigger > .3);
 
 
         if(!intake.Outtake) {
@@ -88,8 +104,9 @@ public class blue extends OpMode {
         if(!intake.stopOn){
             if(!intake.intakeOn){
                 intake.indexState = Intake.IndexState.INTAKE;
+                intake.intakeState = Intake.IntakeState.SHOOT;
             }
-            if(shooter.currentFlywheelSpeed >= (shooter.targetFlywheelSpeed-200)) {
+            if(shooter.currentFlywheelSpeed >= Math.abs(shooter.targetFlywheelSpeed-20) && Math.abs(turret.analogangle - (turret.turretAngle*360) ) < 5) {
                 intake.stopState = Intake.StopState.SHOOT;
             }
         } else {
@@ -97,89 +114,31 @@ public class blue extends OpMode {
         }
 
         if(gamepad1.dpad_left){
-            follower.setPose(new Pose (-63.306,-59.74,Math.toRadians(180)));
-        }
-
-//        63.306 0
-
-        if(gamepad1.bWasPressed()){
-            turret.turretAngle += 10;
-        }
-        if(gamepad1.aWasPressed()){
-            turret.turretAngle -= 10;
+            follower.setPose(new Pose (63.306,-59.74,Math.toRadians(0)));
         }
 
         if(gamepad1.leftBumperWasPressed()){
             shooter.shooterActivated = !shooter.shooterActivated;
         }
-//
-//
-//        if(gamepad1.bWasPressed()){
-//            shooter.stepIndex = (shooter.stepIndex + 1) % shooter.stepsizes.length;
-//        }
-//
-//        if(gamepad1.dpadLeftWasPressed()){
-//            intake.Kf += shooter.stepsizes[shooter.stepIndex];
-//        }
-//
-//        if(gamepad1.dpadRightWasPressed()){
-//            intake.Kf -= shooter.stepsizes[shooter.stepIndex];
-//        }
-//
-//        if(gamepad1.dpadUpWasPressed()){
-//            intake.Kp += shooter.stepsizes[shooter.stepIndex];
-//        }
-//
-//        if(gamepad1.dpadDownWasPressed()){
-//            intake.Kp -= shooter.stepsizes[shooter.stepIndex];
-//        }
-
-//        if(gamepad1.dpadLeftWasPressed()){
-//            turret.blueGoalX += .5;
-//        }
-//
-//        if(gamepad1.dpadRightWasPressed()){
-//            turret.blueGoalX -= .5;
-//        }
-//
-//        if(gamepad1.dpadUpWasPressed()){
-//            turret.blueGoalY += .5;
-//        }
-//
-//        if(gamepad1.dpadDownWasPressed()){
-//            turret.blueGoalY -= .5;
-//        }
-
-//        if(gamepad1.dpadDownWasPressed()){
-//            shooter.hoodAngle +=.01;
-//        }
-//        if(gamepad1.dpadUpWasPressed()){
-//            shooter.hoodAngle -= .01;
-//        }
-//
-//        if(gamepad1.dpadLeftWasPressed()){
-//            shooter.targetFlywheelSpeed += 10;
-//        }
-//        if(gamepad1.dpadRightWasPressed()){
-//            shooter.targetFlywheelSpeed -= 10;
-//        }
-
-
-//        turret.turretAngle = drive.imu.getHeading(AngleUnit.DEGREES);
 
         turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.blueGoalX,turret.blueGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent(),false);
         shooter.update(Shooter.distance2D(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()), turret.blueGoalX,turret.blueGoalY),shooter.currentFlywheelSpeed);
         intake.update();
         follower.update();
+        turret.FFturret(follower.getHeading());
 
-//        if(vision.llResult != null && vision.llResult.isValid()) {
-////            Pose3D botPoseMt2 = llResult.getBotpose_MT2();
-//            telemetry.addData("tx", vision.llResult.getTx());
-//            telemetry.addData("ty", vision.llResult.getTy());
-//            telemetry.addData("ta", vision.llResult.getTa());
-//            shoot.speedCalc(vision.llResult.getTy());
-//
-//        }
+
+
+        telemetry.addData("robotX velo", follower.getVelocity().getXComponent());
+        telemetry.addData("robotY velo", follower.getVelocity().getYComponent());
+        telemetry.addData("robot turn speed", turret.AngularVelocity(follower.getHeading()));
+        telemetry.addData("FF", turret.turretFeedForwardServo);
+        telemetry.addData("FF tuning", turret.TURRET_FF_GAIN);
+
+        telemetry.addData("missangle",Math.abs(turret.analogangle - (turret.turretAngle*360) ));
+
+
+
         telemetry.addData("Heading", Math.toDegrees(follower.getHeading()));
         telemetry.addData("x:", follower.getPose().getX());
         telemetry.addData("y:",follower.getPose().getY());
@@ -211,9 +170,20 @@ public class blue extends OpMode {
 //        telemetry.addData("for servo angle", MathFunctions.normalizeAngle(turret.angleToUnit(turret.turretAngle-180)));
         telemetry.addData("turret angle", turret.turretAngle);
         telemetry.addData("field angle", turret.fieldAngle);
-        telemetry.addData("distance", Shooter.distance2D(follower.getPose().getX(), follower.getPose().getY(), turret.redGoalX,turret.redGoalY));
-        telemetry.addData("blue Goal X", turret.blueGoalX);
-        telemetry.addData("blue goal Y", turret.blueGoalY);
+        telemetry.addData("distance", Shooter.distance2D(follower.getPose().getX(), follower.getPose().getY(), turret.blueGoalX,turret.blueGoalY));
+        telemetry.addData("blue Goal X", turret.goal[0]);
+        telemetry.addData("blue goal Y", turret.goal[1]);
+
+        telemetry.addData("analog", turret.analogangle);
+        telemetry.addData("pos", turret.turretpos);
+
+        telemetry.addData("index speed", intake.intakeR.getVelocity());
+
+        telemetry.addData("outtake", intake.Outtake);
+
+
+
+
 
 
 
@@ -221,6 +191,5 @@ public class blue extends OpMode {
 
         telemetry.update();
         drive.driveFieldRelative(y,x,turn);
-//        drive.driveRobotRelative(y,x,turn);
     }
 }
