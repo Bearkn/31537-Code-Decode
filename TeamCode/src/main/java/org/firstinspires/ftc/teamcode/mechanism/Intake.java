@@ -77,13 +77,12 @@ public class Intake {
         if(IntakeActivated) {
             StopUpdate();
             IntakeUpdate();
-            if (teleOpIntake) {
 //                PIDF intakePID = new PIDF(Kp, Ki, Kd, Kf);
 //                currentIntakeSpeed = intakef.getVelocity();
 //                power = intakePID.calculate(targetIntakeSpeed, currentIntakeSpeed);
                 intakef.setPower(targetIntakeSpeed);
                 intakeR.setPower(targetIntakeSpeed);
-            }
+
         }
     }
 

@@ -19,7 +19,6 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Autonomous
 public class Red12 extends OpMode{
     private Follower follower;
-    MecanumDrive drive = new MecanumDrive();
 
     Shooter shooter = new Shooter();
 
@@ -130,7 +129,9 @@ public class Red12 extends OpMode{
                 }
                 break;
             case SETUPGATE:
-                fileManager.FileWrite(follower.getPose().getX(),follower.getPose().getY(),follower.getHeading());
+                if(follower.isBusy()){
+                    fileManager.FileWrite(follower.getPose().getX(),follower.getPose().getY(),follower.getHeading());
+                }
                 break;
         }
     }
@@ -143,7 +144,32 @@ public class Red12 extends OpMode{
 
     @Override
     public void loop() {
-        drive.imu.update();
+        if(!intake.Outtake) {
+            if (intake.intakeOn) {
+                intake.intakeState = Intake.IntakeState.INTAKE;
+                intake.indexState = Intake.IndexState.INTAKE;
+
+            } else {
+                intake.intakeState = Intake.IntakeState.STOP;
+                intake.indexState = Intake.IndexState.STOP;
+            }
+        } else {
+            intake.intakeState = Intake.IntakeState.OUTTAKE;
+            intake.indexState = Intake.IndexState.OUTTAKE;
+        }
+
+        if(!intake.stopOn){
+            if(!intake.intakeOn){
+                intake.indexState = Intake.IndexState.INTAKE;
+                intake.intakeState = Intake.IntakeState.SHOOT;
+            }
+            if(shooter.currentFlywheelSpeed >= Math.abs(shooter.targetFlywheelSpeed-20) && Math.abs(turret.analogangle - (turret.turretAngle*360) ) < 5) {
+                intake.stopState = Intake.StopState.SHOOT;
+            }
+        } else {
+            intake.stopState = Intake.StopState.HOLD;
+        }
+
         follower.update();
         autonomousPathUpdate();
         turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.redGoalX,turret.redGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent(),true);
@@ -151,6 +177,9 @@ public class Red12 extends OpMode{
         intake.update();
         follower.update();
         turret.FFturret(follower.getHeading());
+
+
+
         telemetry.addData("path state", Pathstate.toString());
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
@@ -166,7 +195,6 @@ public class Red12 extends OpMode{
     @Override
     public void init() {
         setPathState(PathState.FIRST);
-        drive.init(hardwareMap);
         intake.init(hardwareMap);
         shooter.init(hardwareMap);
         turret.init(hardwareMap);
@@ -180,8 +208,9 @@ public class Red12 extends OpMode{
         follower.setStartingPose(startPose);
 
         //state variables
+        intake.intakeOn = false;
         intake.Outtake = false;
-        intake.stopOn = f
+        intake.stopOn = true;
 
 
     }

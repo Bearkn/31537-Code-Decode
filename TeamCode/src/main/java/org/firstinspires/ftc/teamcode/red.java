@@ -99,9 +99,6 @@ public class red extends OpMode {
             intake.indexState = Intake.IndexState.OUTTAKE;
         }
 
-        intake.stopOn = !(gamepad1.right_trigger > .3);
-
-
         if(!intake.stopOn){
             if(!intake.intakeOn){
                 intake.indexState = Intake.IndexState.INTAKE;
