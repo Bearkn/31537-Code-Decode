@@ -20,7 +20,7 @@ import java.io.File;
 @TeleOp
 public class RPMSHOOTER extends OpMode {
     private Follower follower;
-    private final Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
+        private Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
     MecanumDrive drive = new MecanumDrive();
     Turret turret = new Turret();
 
@@ -45,8 +45,16 @@ public class RPMSHOOTER extends OpMode {
         shooter.init(hardwareMap);
         intake.init(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(startPose);
+//        follower.setStartingPose(startPose);
         fileManager.init();
+//        fileManager.FileWrite(follower.getPose().getX(),24,follower.getHeading());
+        fileManager.FileRead();
+        telemetry.addData("points",fileManager.routine);
+        drive.imu.recalibrateIMU();
+        Pose Autonpose = new Pose(fileManager.routine.get(0),fileManager.routine.get(1),fileManager.routine.get(2));
+        follower.setPose(startPose);
+
+
 
 
 
@@ -73,7 +81,9 @@ public class RPMSHOOTER extends OpMode {
             intake.intakeOn = !intake.intakeOn;
         }
 
-        gamepad1.a = intake.Outtake;
+        intake.Outtake = (gamepad1.left_trigger > .5);
+        intake.stopOn = !(gamepad1.right_trigger > .3);
+
 
 
         if(!intake.Outtake) {
@@ -90,15 +100,12 @@ public class RPMSHOOTER extends OpMode {
             intake.indexState = Intake.IndexState.OUTTAKE;
         }
 
-        intake.stopOn = !(gamepad1.right_trigger > .3);
-
-
         if(!intake.stopOn){
             if(!intake.intakeOn){
                 intake.indexState = Intake.IndexState.INTAKE;
                 intake.intakeState = Intake.IntakeState.SHOOT;
             }
-            if(shooter.currentFlywheelSpeed >= Math.abs(shooter.targetFlywheelSpeed-20) && Math.abs(turret.analogangle - (turret.turretAngle*360) ) < 5) {
+            if(shooter.currentFlywheelSpeed >= Math.abs(shooter.targetFlywheelSpeed-150)) {
                 intake.stopState = Intake.StopState.SHOOT;
             }
         } else {
@@ -121,7 +128,7 @@ public class RPMSHOOTER extends OpMode {
         if(gamepad1.leftBumperWasPressed()){
             shooter.shooterActivated = !shooter.shooterActivated;
         }
-//
+
 //
 //        if(gamepad1.bWasPressed()){
 //            shooter.stepIndex = (shooter.stepIndex + 1) % shooter.stepsizes.length;
@@ -176,14 +183,12 @@ public class RPMSHOOTER extends OpMode {
 
 //        turret.turretAngle = drive.imu.getHeading(AngleUnit.DEGREES);
 
-        turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.redGoalX,turret.redGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent(),true);
-        shooter.update(Shooter.distance2D(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()), turret.redGoalX,turret.redGoalY),shooter.currentFlywheelSpeed);
+        turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.blueGoalX,turret.blueGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent(),false,true);
+        shooter.update(Shooter.distance2D(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()), turret.blueGoalX,turret.blueGoalY),shooter.currentFlywheelSpeed);
         intake.update();
         follower.update();
         turret.FFturret(follower.getHeading());
 //        fileManager.FileWrite(follower.getPose().getX(),follower.getPose().getY(),follower.getHeading());
-        fileManager.FileRead();
-        telemetry.addData("points",fileManager.routine.get(1));
 
 //        if(vision.llResult != null && vision.llResult.isValid()) {
 ////            Pose3D botPoseMt2 = llResult.getBotpose_MT2();
@@ -236,7 +241,7 @@ public class RPMSHOOTER extends OpMode {
 //        telemetry.addData("for servo angle", MathFunctions.normalizeAngle(turret.angleToUnit(turret.turretAngle-180)));
         telemetry.addData("turret angle", turret.turretAngle);
         telemetry.addData("field angle", turret.fieldAngle);
-        telemetry.addData("distance", Shooter.distance2D(follower.getPose().getX(), follower.getPose().getY(), turret.redGoalX,turret.redGoalY));
+        telemetry.addData("distance", Shooter.distance2D(follower.getPose().getX(), follower.getPose().getY(), turret.blueGoalX,turret.blueGoalY));
         telemetry.addData("red Goal X", turret.goal[0]);
         telemetry.addData("red goal Y", turret.goal[1]);
 
@@ -244,6 +249,9 @@ public class RPMSHOOTER extends OpMode {
         telemetry.addData("pos", turret.turretpos);
 
         telemetry.addData("index speed", intake.intakeR.getVelocity());
+
+        telemetry.addData("outtake", intake.Outtake);
+
 
 
 

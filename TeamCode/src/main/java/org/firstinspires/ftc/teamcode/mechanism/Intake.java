@@ -38,7 +38,8 @@ public class Intake {
         INTAKE,
         STOP,
         OUTTAKE,
-        SHOOT
+        SHOOT,
+        SHOOTFAR
     }
     public IntakeState intakeState;
 
@@ -100,7 +101,7 @@ public class Intake {
     public void IntakeUpdate() {
         switch (intakeState) {
             case INTAKE:
-                targetIntakeSpeed = 1;
+                targetIntakeSpeed = .8;
                 break;
             case STOP:
                 targetIntakeSpeed = 0;
@@ -110,6 +111,8 @@ public class Intake {
                 break;
             case SHOOT:
                 targetIntakeSpeed = .5;
+            case SHOOTFAR:
+                targetIntakeSpeed = .4;
         }
     }
 

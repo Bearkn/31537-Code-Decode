@@ -20,7 +20,7 @@ import java.io.File;
 @TeleOp
 public class blue extends OpMode {
     private Follower follower;
-    private Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
+//    private Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
     MecanumDrive drive = new MecanumDrive();
     Turret turret = new Turret();
 
@@ -45,7 +45,7 @@ public class blue extends OpMode {
         shooter.init(hardwareMap);
         intake.init(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(startPose);
+//        follower.setStartingPose(startPose);
         fileManager.init();
 //        fileManager.FileWrite(follower.getPose().getX(),24,follower.getHeading());
         fileManager.FileRead();
@@ -63,8 +63,8 @@ public class blue extends OpMode {
     public void loop(){
         drive.imu.update();
 
-        y = -gamepad1.left_stick_y;
-        x = gamepad1.left_stick_x;
+        y = gamepad1.left_stick_y;
+        x = -gamepad1.left_stick_x;
         turn = gamepad1.right_stick_x;
         if (y >= -tolerance && y <= tolerance) {
             y = 0;
@@ -106,7 +106,7 @@ public class blue extends OpMode {
                 intake.indexState = Intake.IndexState.INTAKE;
                 intake.intakeState = Intake.IntakeState.SHOOT;
             }
-            if(shooter.currentFlywheelSpeed >= Math.abs(shooter.targetFlywheelSpeed-20) && Math.abs(turret.analogangle - (turret.turretAngle*360) ) < 5) {
+            if(shooter.currentFlywheelSpeed >= Math.abs(shooter.targetFlywheelSpeed-150)) {
                 intake.stopState = Intake.StopState.SHOOT;
             }
         } else {
@@ -114,14 +114,14 @@ public class blue extends OpMode {
         }
 
         if(gamepad1.dpad_left){
-            follower.setPose(new Pose (63.306,-59.74,Math.toRadians(0)));
+            follower.setPose(new Pose (62.5,-59,Math.toRadians(0)));
         }
 
         if(gamepad1.leftBumperWasPressed()){
             shooter.shooterActivated = !shooter.shooterActivated;
         }
 
-        turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.blueGoalX,turret.blueGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent(),false);
+        turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.blueGoalX,turret.blueGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent(),false,true);
         shooter.update(Shooter.distance2D(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()), turret.blueGoalX,turret.blueGoalY),shooter.currentFlywheelSpeed);
         intake.update();
         follower.update();

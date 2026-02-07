@@ -20,7 +20,7 @@ import java.io.File;
 @TeleOp
 public class red extends OpMode {
     private Follower follower;
-    private Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
+//    private Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
     MecanumDrive drive = new MecanumDrive();
     Turret turret = new Turret();
 
@@ -45,7 +45,7 @@ public class red extends OpMode {
         shooter.init(hardwareMap);
         intake.init(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(startPose);
+//        follower.setStartingPose(startPose);
         fileManager.init();
 //        fileManager.FileWrite(follower.getPose().getX(),24,follower.getHeading());
         fileManager.FileRead();
@@ -104,7 +104,7 @@ public class red extends OpMode {
                 intake.indexState = Intake.IndexState.INTAKE;
                 intake.intakeState = Intake.IntakeState.SHOOT;
             }
-            if(shooter.currentFlywheelSpeed >= Math.abs(shooter.targetFlywheelSpeed-20) && Math.abs(turret.analogangle - (turret.turretAngle*360) ) < 5) {
+            if(shooter.currentFlywheelSpeed >= Math.abs(shooter.targetFlywheelSpeed-150) ) {
                 intake.stopState = Intake.StopState.SHOOT;
             }
         } else {
@@ -112,7 +112,7 @@ public class red extends OpMode {
         }
 
         if(gamepad1.dpad_left){
-            follower.setPose(new Pose (-63.306,-59.74,Math.toRadians(180)));
+            follower.setPose(new Pose (-62.5,-59,Math.toRadians(180)));
         }
 
 //        63.306 0
@@ -182,7 +182,7 @@ public class red extends OpMode {
 
 //        turret.turretAngle = drive.imu.getHeading(AngleUnit.DEGREES);
 
-        turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.redGoalX,turret.redGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent(),true);
+        turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.redGoalX,turret.redGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent(),true,true);
         shooter.update(Shooter.distance2D(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()), turret.redGoalX,turret.redGoalY),shooter.currentFlywheelSpeed);
         intake.update();
         follower.update();

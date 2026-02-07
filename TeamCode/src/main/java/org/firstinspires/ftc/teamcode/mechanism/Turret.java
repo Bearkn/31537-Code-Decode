@@ -56,7 +56,7 @@ public class Turret {
 
     public double fieldAngle;
 
-    public double ballFlightTime = .5;
+    public double ballFlightTime = .7;
 
     public ElapsedTime angularVeloTime = new ElapsedTime();
 
@@ -95,7 +95,7 @@ public class Turret {
     private double lastAngle2 = 0, totalAngle2 = 0;
 
     // FF
-    public  double TURRET_FF_GAIN = .06;
+    public  double TURRET_FF_GAIN = .04;
 
     public double turretFeedForwardServo = 0;
 
@@ -144,7 +144,7 @@ public class Turret {
 
 
     private double clampTurretTarget(double target) {
-        return Math.max(0.025, Math.min(.975, target));
+        return Math.max(.025, Math.min(.975, target));
     }
 
     public double turretpositionX(double robotX, double robotY, double robotHeading) {
@@ -162,7 +162,8 @@ public class Turret {
             double turretY,
             double robotVectorX,
             double robotVectorY,
-            boolean isRed
+            boolean isRed,
+            boolean SOTM
     ) {
         // Select correct goal
         double goalX = isRed ? redGoalX : blueGoalX;
@@ -179,8 +180,11 @@ public class Turret {
 
         double compensatedGoalX = goalX - leadX;
         double compensatedGoalY = goalY - leadY;
+        if(SOTM) {
+            return new double[]{compensatedGoalX, compensatedGoalY};
+        } else
+            return new double[]{goalX, goalY};
 
-        return new double[]{compensatedGoalX, compensatedGoalY};
     }
 
     public double AngularVelocity(double robotHeading) {
@@ -213,14 +217,16 @@ public class Turret {
             double goalY,
             double robotVectX,
             double robotVectY,
-            boolean isRed
+            boolean isRed,
+            boolean SOTM
     ) {
         goal = shootOnTheMove(
                 turretpositionX(robotX, robotY, robotHeading),
                 turretpositionY(robotX, robotY, robotHeading),
                 robotVectX,
                 robotVectY,
-                isRed
+                isRed,
+                SOTM
         );
 
         turretAngle = calculateTurretAngle(robotX, robotY, robotHeading, goal[0], goal[1]) + turretFeedForwardServo;
@@ -244,8 +250,8 @@ public class Turret {
 //            turretServoBack.setPosition(.5);
 //            turretServos.set(.1);
         } else {
-            turretServoFront.setPosition(.5);
-            turretServoBack.setPosition(.5);
+//            turretServoFront.setPosition(0.5);
+//            turretServoBack.setPosition(.5);
         }
     }
 }
