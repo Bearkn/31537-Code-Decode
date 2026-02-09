@@ -102,9 +102,9 @@ public class red extends OpMode {
         if(!intake.stopOn){
             if(!intake.intakeOn){
                 intake.indexState = Intake.IndexState.INTAKE;
-                intake.intakeState = Intake.IntakeState.SHOOT;
+                intake.intakeState = Intake.IntakeState.SHOOTFAR;
             }
-            if(shooter.currentFlywheelSpeed >= Math.abs(shooter.targetFlywheelSpeed-150) ) {
+            if(shooter.currentFlywheelSpeed >= Math.abs(shooter.targetFlywheelSpeed-75) ) {
                 intake.stopState = Intake.StopState.SHOOT;
             }
         } else {
@@ -112,7 +112,11 @@ public class red extends OpMode {
         }
 
         if(gamepad1.dpad_left){
-            follower.setPose(new Pose (-62.5,-59,Math.toRadians(180)));
+            follower.setPose(new Pose (-62.5,-63.5,Math.toRadians(180)));
+        }
+
+        if(shooter.shooterActivated){
+            gamepad1.rumble(100);
         }
 
 //        63.306 0

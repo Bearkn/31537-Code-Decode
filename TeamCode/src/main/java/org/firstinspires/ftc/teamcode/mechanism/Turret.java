@@ -250,8 +250,8 @@ public class Turret {
 //            turretServoBack.setPosition(.5);
 //            turretServos.set(.1);
         } else {
-//            turretServoFront.setPosition(0.5);
-//            turretServoBack.setPosition(.5);
+            turretServoFront.setPosition(0.5);
+            turretServoBack.setPosition(.5);
         }
     }
 }

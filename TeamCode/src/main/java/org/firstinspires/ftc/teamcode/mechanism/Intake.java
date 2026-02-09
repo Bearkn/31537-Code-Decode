@@ -93,7 +93,7 @@ public class Intake {
                 stop.setPosition(.0);
                 break;
             case HOLD:
-                stop.setPosition(.25);
+                stop.setPosition(.4);
                 break;
         }
     }
@@ -112,7 +112,7 @@ public class Intake {
             case SHOOT:
                 targetIntakeSpeed = .5;
             case SHOOTFAR:
-                targetIntakeSpeed = .4;
+                targetIntakeSpeed = .3;
         }
     }
 

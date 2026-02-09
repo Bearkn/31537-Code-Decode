@@ -108,7 +108,7 @@ public class Blue18Close extends OpMode{
                         new BezierCurve(
                                 new Pose(20.000-72, 66.000-72),
                                 new Pose(18.000-72, 60.000-72),
-                                new Pose(14.000-72, 62.000-72)
+                                new Pose(14.000-72, 58.000-72)
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(145))
 
@@ -116,7 +116,7 @@ public class Blue18Close extends OpMode{
 
         Path6 = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(14-72, 62-72),
+                                new Pose(14-72, 58-72),
                                 new Pose(51.000-72, 63.000-72),
                                 new Pose(52.000-72, 92.000-72)
                         )
@@ -128,7 +128,7 @@ public class Blue18Close extends OpMode{
                         new BezierCurve(
                                 new Pose(52.000-72, 92.000-72),
                                 new Pose(45.000-72, 84.000-72),
-                                new Pose(21-72, 80.000-72)
+                                new Pose(24-72, 80.000-72)
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
 
@@ -136,7 +136,7 @@ public class Blue18Close extends OpMode{
 
         Path8 = follower.pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(21-72, 80.000-72),
+                                new Pose(24-72, 80.000-72),
 
                                 new Pose(52.000-72, 92.000-72)
                         )
@@ -178,14 +178,14 @@ public class Blue18Close extends OpMode{
                         new BezierCurve(
                                 new Pose(52.000-72, 92.000-72),
                                 new Pose(57.000-72, 30.000-72),
-                                new Pose(21.000-72, 39.000-72)
+                                new Pose(24.000-72, 39.000-72)
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
 
         Path13 = follower.pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(21.000-72, 36.000-72),
+                                new Pose(24.000-72, 36.000-72),
 
                                 new Pose(60-72, 110-72)
                         )

@@ -106,7 +106,7 @@ public class blue extends OpMode {
                 intake.indexState = Intake.IndexState.INTAKE;
                 intake.intakeState = Intake.IntakeState.SHOOT;
             }
-            if(shooter.currentFlywheelSpeed >= Math.abs(shooter.targetFlywheelSpeed-150)) {
+            if(shooter.currentFlywheelSpeed >= Math.abs(shooter.targetFlywheelSpeed-75)) {
                 intake.stopState = Intake.StopState.SHOOT;
             }
         } else {
@@ -114,11 +114,15 @@ public class blue extends OpMode {
         }
 
         if(gamepad1.dpad_left){
-            follower.setPose(new Pose (62.5,-59,Math.toRadians(0)));
+            follower.setPose(new Pose (62.5,-63.5,Math.toRadians(0)));
         }
 
         if(gamepad1.leftBumperWasPressed()){
             shooter.shooterActivated = !shooter.shooterActivated;
+        }
+
+        if(shooter.shooterActivated){
+            gamepad1.rumble(100);
         }
 
         turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.blueGoalX,turret.blueGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent(),false,true);
