@@ -20,7 +20,7 @@ import java.io.File;
 @TeleOp
 public class RPMSHOOTER extends OpMode {
     private Follower follower;
-        private Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
+        private Pose startPose = new Pose(-24,24, Math.toRadians(0)); // Start Pose of our robot.
     MecanumDrive drive = new MecanumDrive();
     Turret turret = new Turret();
 
@@ -166,6 +166,10 @@ public class RPMSHOOTER extends OpMode {
 //            turret.blueGoalY -= .5;
 //        }
 
+
+        if(gamepad1.aWasPressed()){
+            turret.shooterActivated = !turret.shooterActivated;
+        }
         if(gamepad1.dpadDownWasPressed()){
             shooter.hoodAngle +=.01;
         }
@@ -182,9 +186,9 @@ public class RPMSHOOTER extends OpMode {
 
 
 //        turret.turretAngle = drive.imu.getHeading(AngleUnit.DEGREES);
-
         turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.blueGoalX,turret.blueGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent(),false,true);
         shooter.update(Shooter.distance2D(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()), turret.blueGoalX,turret.blueGoalY),shooter.currentFlywheelSpeed);
+//        shooter.updatedShooter(Shooter.distance2D(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()), turret.blueGoalX,turret.blueGoalY));
         intake.update();
         follower.update();
         turret.FFturret(follower.getHeading());
@@ -199,7 +203,8 @@ public class RPMSHOOTER extends OpMode {
 //
 
 //        }
-
+        telemetry.addData("theo hood angle", shooter.checkHoodAngle);
+        telemetry.addData("theo fly speed", shooter.checkFlySpeed);
         telemetry.addData("robotX velo", follower.getVelocity().getXComponent());
         telemetry.addData("robotY velo", follower.getVelocity().getYComponent());
         telemetry.addData("robot turn speed", turret.AngularVelocity(follower.getHeading()));
@@ -242,8 +247,8 @@ public class RPMSHOOTER extends OpMode {
         telemetry.addData("turret angle", turret.turretAngle);
         telemetry.addData("field angle", turret.fieldAngle);
         telemetry.addData("distance", Shooter.distance2D(follower.getPose().getX(), follower.getPose().getY(), turret.blueGoalX,turret.blueGoalY));
-        telemetry.addData("red Goal X", turret.goal[0]);
-        telemetry.addData("red goal Y", turret.goal[1]);
+        telemetry.addData("red Goal X", turret.blueGoalY);
+        telemetry.addData("red goal Y", turret.blueGoalY);
 
         telemetry.addData("analog", turret.analogangle);
         telemetry.addData("pos", turret.turretpos);

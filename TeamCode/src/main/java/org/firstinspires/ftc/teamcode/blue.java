@@ -21,6 +21,8 @@ import java.io.File;
 public class blue extends OpMode {
     private Follower follower;
 //    private Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
+    private final Pose startPose = new Pose(33.000-72, 136.000-72, Math.toRadians(270)); // Start Pose of our robot.
+
     MecanumDrive drive = new MecanumDrive();
     Turret turret = new Turret();
 
@@ -116,6 +118,16 @@ public class blue extends OpMode {
         if(gamepad1.dpad_left){
             follower.setPose(new Pose (62.5,-63.5,Math.toRadians(0)));
         }
+        if(gamepad1.dpad_right){
+            follower.setPose(new Pose (-49.5,55.5,follower.getHeading()));
+        }
+        if(gamepad1.dpadDownWasPressed()) {
+            turret.offset -= .005;
+        }
+
+        if(gamepad1.dpadUpWasPressed()) {
+            turret.offset += .005;
+        }
 
         if(gamepad1.leftBumperWasPressed()){
             shooter.shooterActivated = !shooter.shooterActivated;
@@ -175,8 +187,8 @@ public class blue extends OpMode {
         telemetry.addData("turret angle", turret.turretAngle);
         telemetry.addData("field angle", turret.fieldAngle);
         telemetry.addData("distance", Shooter.distance2D(follower.getPose().getX(), follower.getPose().getY(), turret.blueGoalX,turret.blueGoalY));
-        telemetry.addData("blue Goal X", turret.goal[0]);
-        telemetry.addData("blue goal Y", turret.goal[1]);
+        telemetry.addData("blue Goal X", turret.blueGoalX);
+        telemetry.addData("blue goal Y", turret.blueGoalY);
 
         telemetry.addData("analog", turret.analogangle);
         telemetry.addData("pos", turret.turretpos);

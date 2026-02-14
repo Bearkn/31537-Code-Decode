@@ -245,8 +245,8 @@ public class red extends OpMode {
         telemetry.addData("turret angle", turret.turretAngle);
         telemetry.addData("field angle", turret.fieldAngle);
         telemetry.addData("distance", Shooter.distance2D(follower.getPose().getX(), follower.getPose().getY(), turret.redGoalX,turret.redGoalY));
-        telemetry.addData("red Goal X", turret.goal[0]);
-        telemetry.addData("red goal Y", turret.goal[1]);
+        telemetry.addData("red Goal X", turret.redGoalX);
+        telemetry.addData("red goal Y", turret.redGoalX);
 
         telemetry.addData("analog", turret.analogangle);
         telemetry.addData("pos", turret.turretpos);

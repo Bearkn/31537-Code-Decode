@@ -101,7 +101,7 @@ public class Intake {
     public void IntakeUpdate() {
         switch (intakeState) {
             case INTAKE:
-                targetIntakeSpeed = .8;
+                targetIntakeSpeed = 1;
                 break;
             case STOP:
                 targetIntakeSpeed = 0;

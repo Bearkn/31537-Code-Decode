@@ -18,7 +18,7 @@ public class Turret {
     public double redGoalX  = 66;
     public double redGoalY  = 66;
 
-    public double[] goal;
+//    public double[] goal;
 
 //    // Goals
 //    public double SblueGoalX = -66;
@@ -53,6 +53,8 @@ public class Turret {
 
     public double analogangle = 0;
     public boolean shooterActivated = true;
+
+    public double offset = 0;
 
     public double fieldAngle;
 
@@ -220,18 +222,20 @@ public class Turret {
             boolean isRed,
             boolean SOTM
     ) {
-        goal = shootOnTheMove(
-                turretpositionX(robotX, robotY, robotHeading),
-                turretpositionY(robotX, robotY, robotHeading),
-                robotVectX,
-                robotVectY,
-                isRed,
-                SOTM
-        );
+//        goal = shootOnTheMove(
+//                turretpositionX(robotX, robotY, robotHeading),
+//                turretpositionY(robotX, robotY, robotHeading),
+//                robotVectX,
+//                robotVectY,
+//                isRed,
+//                SOTM
+//        );
 
-        turretAngle = calculateTurretAngle(robotX, robotY, robotHeading, goal[0], goal[1]) + turretFeedForwardServo;
+//        turretAngle = calculateTurretAngle(robotX, robotY, robotHeading, goal[0], goal[1]) + turretFeedForwardServo;
+        turretAngle = calculateTurretAngle(robotX, robotY, robotHeading, goalX, goalY) + turretFeedForwardServo;
+
 //        FFturret(robotHeading);
-        turretAngle = MathFunctions.clamp(turretAngle,.025,.975);
+        turretAngle = MathFunctions.clamp(turretAngle + offset,.025,.975);
 
 
         analogangle = (((turretAnalog.getVoltage() / 3.3)* 450)-45);

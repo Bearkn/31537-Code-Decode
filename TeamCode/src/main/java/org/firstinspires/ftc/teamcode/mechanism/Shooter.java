@@ -44,6 +44,18 @@ public class Shooter {
     public double minFlywheelSpeed = 1250;
     public double maxFlywheelSpeed = 2150;
 
+    //updated shooter constants
+
+    public double SCORE_HEIGHT = 39;
+    public double SCORE_ANGLE = Math.toRadians(-30);
+    public double PASS_THROUGH_RADIUS = 5;
+
+    public double checkHoodAngle;
+
+    public double checkFlySpeed;
+
+
+
 
 
     public void init(HardwareMap hwMap){
@@ -64,27 +76,41 @@ public class Shooter {
 
     }
 
+//    public void updateFlywheelSpeed(double distance) {
+//
+//        double flyspeed;
+//
+//        if (distance < 130) {
+//            // Old regression
+//            flyspeed = 0.00000770804 * Math.pow(distance, 4)
+//                    - 0.00385759 * Math.pow(distance, 3)
+//                    + 0.675656 * Math.pow(distance, 2)
+//                    - 39.70454 * distance
+//                    + 2329.88133
+//                    + 40;
+//        } else {
+//            // New regression
+//            flyspeed = -0.25 * distance * distance
+//                    + 82.5 * distance
+//                    - 4340+100;
+//        }
+//
+//        targetFlywheelSpeed = flyspeed;
+//    }
+
     public void updateFlywheelSpeed(double distance) {
 
-        double flyspeed;
-
-        if (distance < 130) {
-            // Old regression
-            flyspeed = 0.00000770804 * Math.pow(distance, 4)
-                    - 0.00385759 * Math.pow(distance, 3)
-                    + 0.675656 * Math.pow(distance, 2)
-                    - 39.70454 * distance
-                    + 2329.88133
-                    + 40;
-        } else {
-            // New regression
-            flyspeed = -0.25 * distance * distance
-                    + 82.5 * distance
-                    - 4340+100;
-        }
+        double flyspeed =
+                0.00000549971 * Math.pow(distance, 4)
+                        - 0.00276458 * Math.pow(distance, 3)
+                        + 0.489946 * Math.pow(distance, 2)
+                        - 27.20115 * distance
+                        + 2090.09518+20;
 
         targetFlywheelSpeed = flyspeed;
     }
+
+
 
 
 //    public void updateHoodAngle(double distance, double currentFlySpeed){
@@ -123,14 +149,30 @@ public class Shooter {
 //
 //        return result;
 //    }
-    public double hoodcontrol(double x) {
+//    public double hoodcontrol(double x) {
+//
+//        if (x < 130) {
+//            return (0.762934 / (1.0 + Math.exp(-(0.173309 * x - 6.2873)))) + .02;
+//        } else {
+//            return .65;
+//        }
+//    }
 
-        if (x < 130) {
-            return (0.762934 / (1.0 + Math.exp(-(0.173309 * x - 6.2873)))) + .02;
-        } else {
-            return .65;
+    public double hoodControl(double x) {
+        if (x >= 0 && x <= 80) {
+            return 0.00000916667 * Math.pow(x, 3)
+                    - 0.00175 * Math.pow(x, 2)
+                    + 0.116083 * x
+                    - 1.929;
+        }
+        else if (x > 80 && x <= 120) {
+            return 0.85;
+        }
+        else { // x > 120
+            return 0.005 * x + 0.3;
         }
     }
+
 
 
 
@@ -138,7 +180,7 @@ public class Shooter {
     public void update(double distance, double currentfly){
 
         PIDF shooterPID = new PIDF(Kp, Ki, Kd, Kf);
-        hoodAngle = MathFunctions.clamp(hoodcontrol(distance), .5, 1.0);
+        hoodAngle = MathFunctions.clamp(hoodControl(distance), .5, 1.0);
         updateFlywheelSpeed(distance);
         UpdateHoodAngle();
         currentFlywheelSpeed = fly2.getVelocity();
@@ -154,6 +196,47 @@ public class Shooter {
             fly2.setPower(0);
         }
     }
+
+
+
+
+    /// // updated shooter
+
+    public double mapDegreesToRange(double degrees) {
+        return 0.5 + ((degrees - 20.0) / (45.0 - 20.0)) * (1.0 - 0.5);
+    }
+
+    public double getExitVelocity(double x) {
+        return MathFunctions.clamp(0.0000155458 * x * x + 0.0555902 * x + 47.69158,100,285);
+    }
+
+    public static double getXFromY(double y) {
+        return (-0.0555902 + Math.sqrt(
+                0.0555902 * 0.0555902
+                        - 4 * 0.0000155458 * (47.69158 - y)
+        )) / (2 * 0.0000155458);
+    }
+
+
+    public void updatedShooter(double distance) {
+
+        double g = 32.174 * 12;
+        double x = distance - PASS_THROUGH_RADIUS;
+        double y = SCORE_HEIGHT;
+        double a = SCORE_ANGLE;
+
+        double hoodangle = MathFunctions.clamp(Math.atan(2*y/x - Math.tan(a)),.5,1);
+
+        double flySpeed = Math.sqrt(g*x*x/(2*Math.pow(Math.cos(hoodangle),2)*(x*Math.tan(hoodangle)-y)));
+
+//        double vz = flySpeed * Math.sin(hoodangle);
+//        double time = x/ (flySpeed * Math.cos(hoodangle));
+
+        hoodAngle = hoodangle;
+        targetFlywheelSpeed = getXFromY(flySpeed);
+    }
+
+
 
 
 }
