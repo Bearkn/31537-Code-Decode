@@ -99,13 +99,22 @@ public class Shooter {
 //    }
 
     public void updateFlywheelSpeed(double distance) {
-
-        double flyspeed =
-                0.00000549971 * Math.pow(distance, 4)
-                        - 0.00276458 * Math.pow(distance, 3)
-                        + 0.489946 * Math.pow(distance, 2)
-                        - 27.20115 * distance
-                        + 2090.09518+20;
+        double flyspeed = 0;
+        if(distance< 120) {
+             flyspeed =
+                    0.00000549971 * Math.pow(distance, 4)
+                            - 0.00276458 * Math.pow(distance, 3)
+                            + 0.489946 * Math.pow(distance, 2)
+                            - 27.20115 * distance
+                            + 2090.09518 + 40;
+        } else {
+             flyspeed =
+                    0.00000549971 * Math.pow(distance, 4)
+                            - 0.00276458 * Math.pow(distance, 3)
+                            + 0.489946 * Math.pow(distance, 2)
+                            - 27.20115 * distance
+                            + 2090.09518;
+        }
 
         targetFlywheelSpeed = flyspeed;
     }

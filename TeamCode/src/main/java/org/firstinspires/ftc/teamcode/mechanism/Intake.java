@@ -66,11 +66,11 @@ public class Intake {
         intakeR = hwMap.get(DcMotorEx.class, "index");
         stop = hwMap.get(Servo.class,"stop");
         intakef.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intakeR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intakef.setDirection(DcMotorSimple.Direction.REVERSE);
         intakef.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         intakeR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        stopState = StopState.HOLD;
+
 
     }
 
@@ -93,7 +93,7 @@ public class Intake {
                 stop.setPosition(.0);
                 break;
             case HOLD:
-                stop.setPosition(.4);
+                stop.setPosition(.2);
                 break;
         }
     }

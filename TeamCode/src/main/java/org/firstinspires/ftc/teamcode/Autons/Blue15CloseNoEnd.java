@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.mechanism.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
-public class Red18Close extends OpMode{
+public class Blue15CloseNoEnd extends OpMode{
     private Follower follower;
     MecanumDrive drive = new MecanumDrive();
     Shooter shooter = new Shooter();
@@ -38,7 +38,7 @@ public class Red18Close extends OpMode{
     //state variables
 
 
-    private final Pose startPose = new Pose(37, 135.000-72, Math.toRadians(270)); // Start Pose of our robot.
+    private final Pose startPose = new Pose(35.000-72, 135.000-72, Math.toRadians(270)); // Start Pose of our robot.
 
 
     public enum PathState {
@@ -95,9 +95,9 @@ public class Red18Close extends OpMode{
     public void buildPaths() {
         Movetoshoot1 = follower.pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(37, 135.000-72),
+                                new Pose(35.000-72, 135.000-72),
 
-                                new Pose(20, 92.000-72)
+                                new Pose(52.000-72, 92.000-72)
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(270), Math.toRadians(270))
 
@@ -105,125 +105,125 @@ public class Red18Close extends OpMode{
 
         GRAB1 = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(20, 92.000-72),
-                                new Pose(18, 54.000-72),
-                                new Pose(52, 60.000-72)
+                                new Pose(52.000-72, 92.000-72),
+                                new Pose(54.000-72, 54.000-72),
+                                new Pose(20.000-72, 60.000-72)
                         )
                 )
 //                .setLinearHeadingInterpolation(Math.toRadians(270), Math.toRadians(180))
-                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
 
         Movetoshoot2 = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(50, 60.000-72),
-                                new Pose(24, 60.000-72),
-                                new Pose(20, 92.000-72)
+                                new Pose(22.000-72, 60.000-72),
+                                new Pose(48.000-72, 60.000-72),
+                                new Pose(52.000-72, 92.000-72)
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                 .build();
 
         Gotogate1 = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(20, 92.000-72),
-                                new Pose(22, 63.000-72),
-                                new Pose(54, 65.000-72)
+                                new Pose(52.000-72, 92.000-72),
+                                new Pose(50.000-72, 63.000-72),
+                                new Pose(18.000-72, 65.000-72)
                         )
-                ).setConstantHeadingInterpolation(Math.toRadians(0))
+                ).setConstantHeadingInterpolation(Math.toRadians(180))
 
                 .build();
 
         GRAB2 = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(54, 65.000-72),
-                                new Pose(52, 54.000-72),
-                                new Pose(59, 56.000-72)
+                                new Pose(18.000-72, 65.000-72),
+                                new Pose(20.000-72, 54.000-72),
+                                new Pose(13.000-72, 56.000-72)
                         )
                 )
 //                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(145))
-                .setConstantHeadingInterpolation(Math.toRadians(35))
+                .setConstantHeadingInterpolation(Math.toRadians(145))
                 .build();
 
         Movetoshoot3 = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(59, 60.000-72),
-                                new Pose(21, 63.000-72),
-                                new Pose(20, 92.000-72)
+                                new Pose(13.000-72, 60.000-72),
+                                new Pose(51.000-72, 63.000-72),
+                                new Pose(52.000-72, 92.000-72)
                         )
                 )
 //                .setLinearHeadingInterpolation(Math.toRadians(125), Math.toRadians(180))
-                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
 
         Gotogate2 = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(20, 92.000-72),
-                                new Pose(22, 63.000-72),
-                                new Pose(54, 65.000-72)
+                                new Pose(52.000-72, 92.000-72),
+                                new Pose(50.000-72, 63.000-72),
+                                new Pose(18.000-72, 65.000-72)
                         )
-                ).setConstantHeadingInterpolation(Math.toRadians(0))
+                ).setConstantHeadingInterpolation(Math.toRadians(180))
 
                 .build();
 
         GRAB3 = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(54, 65.000-72),
-                                new Pose(52, 54.000-72),
-                                new Pose(59, 56.000-72)
+                                new Pose(18.000-72, 65.000-72),
+                                new Pose(20.000-72, 54.000-72),
+                                new Pose(13.000-72, 56.000-72)
                         )
                 )
 //                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(145))
-                .setConstantHeadingInterpolation(Math.toRadians(35))
+                .setConstantHeadingInterpolation(Math.toRadians(145))
                 .build();
 
         Movetoshoot4 = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(59, 60.000-72),
-                                new Pose(24,60-72),
-                                new Pose(20, 92.000-72)
+                                new Pose(13.000-72, 60.000-72),
+                                new Pose(48-72,60-72),
+                                new Pose(52.000-72, 92.000-72)
                         )
                 )
 //                .setLinearHeadingInterpolation(Math.toRadians(125), Math.toRadians(180))
-                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
 
         GRAB4 = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(20, 92.000-72),
-                                new Pose(27, 80.000-72),
-                                new Pose(49, 80.000-72)
+                                new Pose(52.000-72, 92.000-72),
+                                new Pose(45.000-72, 80.000-72),
+                                new Pose(23.000-72, 80.000-72)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                 .build();
 
         Movetoshoot5 = follower.pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(49, 84.000-72),
+                                new Pose(23.000-72, 84.000-72),
 
-                                new Pose(20, 92.000-72)
+                                new Pose(52.000-72, 92.000-72)
                         )
-                ).setConstantHeadingInterpolation(Math.toRadians(0))
+                ).setConstantHeadingInterpolation(Math.toRadians(180))
 
                 .build();
 
         GRAB5 = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                new Pose(20, 92.000-72),
-                                new Pose(15, 36.000-72),
-                                new Pose(57, 40.000-72)
+                                new Pose(52.000-72, 92.000-72),
+                                new Pose(57.000-72, 36.000-72),
+                                new Pose(15.000-72, 40.000-72)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                 .build();
 
         Path13 = follower.pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(57, 40.000-72),
+                                new Pose(52-72, 92-72),
 
-                                new Pose(12, 111-72)
+                                new Pose(60.000-72, 111-72)
                         )
                 ).setTangentHeadingInterpolation()
                 .setReversed()
@@ -231,11 +231,11 @@ public class Red18Close extends OpMode{
 
         Path14 = follower.pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(20, 92.000-72),
+                                new Pose(52.000-72, 92.000-72),
 
-                                new Pose(33, 81.000-72)
+                                new Pose(39.000-72, 81.000-72)
                         )
-                ).setConstantHeadingInterpolation(Math.toRadians(0))
+                ).setConstantHeadingInterpolation(Math.toRadians(180))
 
                 .build();
     }
@@ -300,7 +300,7 @@ public class Red18Close extends OpMode{
                 }
                 break;
             case DRIVE_TO_THIRD:
-                if (pathTimer.seconds() > .25) {
+                if (pathTimer.seconds() > .5) {
                     follower.breakFollowing();
                     follower.followPath(GRAB2,true);
                     setPathState(PathState.GO_LEVER1);
@@ -354,7 +354,7 @@ public class Red18Close extends OpMode{
                 }
                 break;
             case DRIVE_TO_FOURTH:
-                if (pathTimer.seconds() > .5) {
+                if (pathTimer.seconds() > 1) {
                     follower.breakFollowing();
                     follower.followPath(GRAB3,true);
                     setPathState(PathState.GO_LEVER2);
@@ -415,14 +415,14 @@ public class Red18Close extends OpMode{
 
                     intake.stopOn = true;
 
-                    follower.followPath(GRAB5,true);    // start next movement
+                    follower.followPath(Path13,true);    // start next movement
                     setPathState(PathState.DRIVE_TO_SIXTH);
                 }
                 break;
             case DRIVE_TO_SIXTH:
                 if(!follower.isBusy()){
-                    follower.followPath(Path13,.7,true);
-                    setPathState(PathState.DRIVE_TO_SHOOT_4);
+                    follower.breakFollowing();
+                    setPathState(PathState.DRIVE_TO_END);
                 }
                 break;
             case DRIVE_TO_SHOOT_4:
@@ -486,8 +486,8 @@ public class Red18Close extends OpMode{
 
         follower.update();
         autonomousPathUpdate();
-        turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.redGoalX,turret.redGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent(),true,false);
-        shooter.update(Shooter.distance2D(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()), turret.redGoalX,turret.redGoalY),shooter.currentFlywheelSpeed);
+        turret.update(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),Math.toDegrees(follower.getHeading()),turret.blueGoalX,turret.blueGoalY,follower.getVelocity().getXComponent(),follower.getVelocity().getYComponent(),false,false);
+        shooter.update(Shooter.distance2D(turret.turretpositionX(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()),turret.turretpositionY(follower.getPose().getX(), follower.getPose().getY(),follower.getPose().getHeading()), turret.blueGoalX,turret.blueGoalY),shooter.currentFlywheelSpeed);
         intake.update();
         follower.update();
         turret.FFturret(follower.getHeading());
@@ -533,9 +533,7 @@ public class Red18Close extends OpMode{
         intake.Outtake = false;
         intake.stopOn = true;
 
-        turret.offset += .01;
-
-
+        turret.offset -= .01;
 
     }
     /** This method is called continuously after Init while waiting for "play". **/

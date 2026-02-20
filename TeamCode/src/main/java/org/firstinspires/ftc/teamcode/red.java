@@ -52,6 +52,7 @@ public class red extends OpMode {
         telemetry.addData("points",fileManager.routine);
         Pose Autonpose = new Pose(fileManager.routine.get(0),fileManager.routine.get(1),fileManager.routine.get(2));
         follower.setPose(Autonpose);
+        turret.offset += .01;
 
 
 
@@ -115,7 +116,19 @@ public class red extends OpMode {
             follower.setPose(new Pose (-62.5,-63.5,Math.toRadians(180)));
         }
 
-        if(shooter.shooterActivated){
+        if(gamepad1.dpad_right){
+            follower.setPose(new Pose (49.5,55.5,follower.getHeading()));
+        }
+        if(gamepad1.dpadDownWasPressed()) {
+            turret.offset -= .005;
+        }
+
+        if(gamepad1.dpadUpWasPressed()) {
+            turret.offset += .005;
+        }
+
+
+        if(!shooter.shooterActivated){
             gamepad1.rumble(100);
         }
 
@@ -127,6 +140,14 @@ public class red extends OpMode {
 //        if(gamepad1.xWasPressed()){
 //            turret.turretpos -= .01;
 //        }
+
+        if(gamepad1.dpadDownWasPressed()) {
+            turret.offset -= .005;
+        }
+
+        if(gamepad1.dpadUpWasPressed()) {
+            turret.offset += .005;
+        }
 
         if(gamepad1.leftBumperWasPressed()){
             shooter.shooterActivated = !shooter.shooterActivated;

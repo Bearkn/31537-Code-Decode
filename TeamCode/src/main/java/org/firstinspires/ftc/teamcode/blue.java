@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Algs.FileManager;
 import org.firstinspires.ftc.teamcode.mechanism.Intake;
@@ -54,6 +55,7 @@ public class blue extends OpMode {
         telemetry.addData("points",fileManager.routine);
         Pose Autonpose = new Pose(fileManager.routine.get(0),fileManager.routine.get(1),fileManager.routine.get(2));
         follower.setPose(Autonpose);
+        turret.offset += .01;
 
 
 
@@ -133,7 +135,7 @@ public class blue extends OpMode {
             shooter.shooterActivated = !shooter.shooterActivated;
         }
 
-        if(shooter.shooterActivated){
+        if(!shooter.shooterActivated){
             gamepad1.rumble(100);
         }
 
@@ -143,7 +145,15 @@ public class blue extends OpMode {
         follower.update();
         turret.FFturret(follower.getHeading());
 
-
+        telemetry.addData("current", intake.intakeR.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("current", intake.intakef.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("Shooter1", shooter.fly1.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("Shooter2", shooter.fly2.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("RF", drive.frontRightMotor.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("RB", drive.backRightMotor.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("LF", drive.frontLeftMotor.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("LB", drive.backLeftMotor.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("total",intake.intakeR.getCurrent(CurrentUnit.AMPS)+ intake.intakef.getCurrent(CurrentUnit.AMPS)+shooter.fly1.getCurrent(CurrentUnit.AMPS)+ shooter.fly2.getCurrent(CurrentUnit.AMPS) +drive.frontRightMotor.getCurrent(CurrentUnit.AMPS) + drive.backRightMotor.getCurrent(CurrentUnit.AMPS) + drive.frontLeftMotor.getCurrent(CurrentUnit.AMPS) +drive.backLeftMotor.getCurrent(CurrentUnit.AMPS));
 
         telemetry.addData("robotX velo", follower.getVelocity().getXComponent());
         telemetry.addData("robotY velo", follower.getVelocity().getYComponent());

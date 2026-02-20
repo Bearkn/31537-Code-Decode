@@ -75,7 +75,7 @@ public class Blue18FAR extends OpMode{
                             new BezierLine(
                                     new Pose(-60, -65),
 
-                                    new Pose(-18, -63)
+                                    new Pose(-18, -53)
                             )
                     ).setConstantHeadingInterpolation(Math.toRadians(180))
 
@@ -179,6 +179,7 @@ public class Blue18FAR extends OpMode{
                 shooter.shooterActivated = true;
                 if(pathTimer.seconds()>2){
                     intake.stopOn = false;
+                    intake.intakeOn = true;
                 }
                 if(pathTimer.seconds()>4) {
                     intake.stopOn = true;
@@ -203,7 +204,7 @@ public class Blue18FAR extends OpMode{
 //                }
                 if(!follower.isBusy()){
                     intake.stopOn = false;
-                    intake.intakeOn = false;
+                    intake.intakeOn = true;
                     if(pathTimer.seconds() >=3.5) {
                         intake.stopOn = true;
                         intake.intakeOn = true;
@@ -226,7 +227,7 @@ public class Blue18FAR extends OpMode{
             case SHOOT2:
                 if(!follower.isBusy()){
                     intake.stopOn = false;
-                    intake.intakeOn = false;
+                    intake.intakeOn = true;
                     if(pathTimer.seconds() >=3.5) {
                         intake.stopOn = true;
                         intake.intakeOn = true;
@@ -248,7 +249,7 @@ public class Blue18FAR extends OpMode{
             case SHOOT3:
                 if(!follower.isBusy()){
                     intake.stopOn = false;
-                    intake.intakeOn = false;
+                    intake.intakeOn = true;
                     if(pathTimer.seconds() >=3.5) {
                         intake.stopOn = true;
                         intake.intakeOn = true;
@@ -270,7 +271,7 @@ public class Blue18FAR extends OpMode{
             case SHOOT4:
                 if(!follower.isBusy()){
                     intake.stopOn = false;
-                    intake.intakeOn = false;
+                    intake.intakeOn = true;
                     if(pathTimer.seconds() >=3.5) {
                         intake.stopOn = true;
                         intake.intakeOn = true;
@@ -292,7 +293,7 @@ public class Blue18FAR extends OpMode{
             case SHOOT5:
                 if(!follower.isBusy()){
                     intake.stopOn = false;
-                    intake.intakeOn = false;
+                    intake.intakeOn = true;
                     if(pathTimer.seconds() >=3.5) {
                         intake.stopOn = true;
                         intake.intakeOn = true;
@@ -389,6 +390,7 @@ public class Blue18FAR extends OpMode{
         intake.intakeOn = false;
         intake.Outtake = false;
         intake.stopOn = true;
+//        turret.offset += .01;
 
 
     }

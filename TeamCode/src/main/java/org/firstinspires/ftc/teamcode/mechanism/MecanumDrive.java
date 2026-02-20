@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.mechanism;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -10,22 +11,22 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class MecanumDrive {
-    private DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
+    public DcMotorEx frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
     public GoBildaPinpointDriver imu;
 
     public void init(HardwareMap hwMap){
-        frontLeftMotor = hwMap.get(DcMotor.class, "flm");
-        frontRightMotor = hwMap.get(DcMotor.class, "frm");
-        backLeftMotor = hwMap.get(DcMotor.class, "blm");
-        backRightMotor = hwMap.get(DcMotor.class, "brm");
+        frontLeftMotor = hwMap.get(DcMotorEx.class, "flm");
+        frontRightMotor = hwMap.get(DcMotorEx.class, "frm");
+        backLeftMotor = hwMap.get(DcMotorEx.class, "blm");
+        backRightMotor = hwMap.get(DcMotorEx.class, "brm");
 
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         imu = hwMap.get(GoBildaPinpointDriver.class, "pinpoint");
         imu.setHeading(0,AngleUnit.DEGREES);
         imu.recalibrateIMU();
